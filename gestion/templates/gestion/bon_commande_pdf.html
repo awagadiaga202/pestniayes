@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Bon de Commande</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; color: #333; }
+        header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        header h1 { margin: 0; font-size: 24px; }
+        .info-entreprise, .info-fournisseur { margin-bottom: 20px; font-size: 13px; }
+        .info-fournisseur strong { text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #f5f5f5; }
+        tfoot td { font-weight: bold; }
+        .footer { font-size: 12px; text-align: center; margin-top: 40px; border-top: 1px solid #ddd; padding-top: 10px; }
+        .signature { margin-top: 40px; display: flex; justify-content: flex-end; font-size: 13px; }
+        .signature img { height: 60px; margin-left: 20px; }
+        .logo { height: 80px; }
+    </style>
+</head>
+<body>
+
+<table style="width: 100%; border: 2px solid #000; border-radius: 10px; background-color: #f2f2f2; margin-bottom: 20px;" cellspacing="0" cellpadding="10">
+               <tr>
+ <td style="text-align: center;">
+
+    {% if logo_base64 %}
+    <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="logo" alt="Logo Prest-Niayes" /></br>
+    {% endif %}
+    Localisation : Notto Gouye Diama, Sénégal<br/>
+        RC: SN THS 2018 A 3014 - NINEA: 006906400 <br/>
+        Téléphone : +221 77 477 17 07 |+221 77 996 96 56 | +221 76 016 91 94<br/>
+        Email : mbayeb2@live.fr<br/>
+        Numero Compte LBA: SN04804001 000110340201 48</br>
+        Numéro Compte ECOBANK: 101390048001 
+
+    <div>
+       </td>
+    </tr>
+</table>
+
+<section class="info-fournisseur">
+<h3><strong>N° :</strong> {{ numero_bc }} | <strong>Date :</strong> {{ date_commande }} | <strong>Livraison avant :</strong> {{ date_livraison }}</div>
+</h3>
+    <p><strong>Numéro du Véhicule :</strong> {{ numero_vehicule }}</p>
+
+    <strong>Fournisseur :</strong>
+    {% if fournisseur_entreprise %}{{ fournisseur_entreprise }}<br />{% endif %}
+   Adresse:  {% if fournisseur_adresse %}{{ fournisseur_adresse|linebreaksbr }}<br />{% endif %}
+</section>
+
+<table>
+    <thead>
+        <tr>
+            <th>Produit</th>
+            <th>Quantité (en sac)</th>
+            <th>Prix Unitaire (FCFA)</th>
+            <th>Montant (FCFA)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ligne in lignes %}
+        <tr>
+            <td>{{ ligne.produit }}</td>
+            <td>{{ ligne.quantite }}</td>
+            <td>{{ ligne.prix_unitaire }}</td>
+            <td>{{ ligne.montant }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" style="text-align:right;">Total TTC (FCFA)</td>
+            <td>{{ total }}</td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="signature">
+    La Direction
+    {% comment %} Tu peux intégrer ici l'image de signature/cachet en base64 si besoin {% endcomment %}
+    <img src="{% static 'images/cachet_signature.png' %}" alt="Signature Cachet" />
+</div>
+
+<div class="footer">
+Merci pour votre confiance !</div>
+
+</body>
+</html>

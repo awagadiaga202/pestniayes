@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Lettre de Voiture</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 6px; }
+        .section-title { background-color: #f0f0f0; font-weight: bold; text-align: center; }
+        .footer { margin-top: 40px; display: flex; justify-content: space-between; }
+        .signature { width: 45%; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <table style="width: 100%; border: 2px solid #000; border-radius: 10px; background-color: #f2f2f2; margin-bottom: 20px;" cellspacing="0" cellpadding="10">
+               <tr>
+ <td style="text-align: center;">
+    
+    {% if logo_base64 %}
+    <img src="data:image/jpg;base64,{{ logo_base64 }}" alt="Logo Prest-Niayes" style="width: 120px; height: auto;" /></br>
+    {% endif %}
+        République du Sénégal<br/>
+        Entreprise Prest-Niayes<br/>
+    Localisation : Notto Gouye Diama, Sénégal<br/>
+        RC: SN THS 2018 A 3014 - NINEA: 006906400 <br/>
+        Téléphone : +221 77 477 17 07 | +221 77 996 96 56| +221 76 016 91 94<br/>
+        Email : mbayeb2@live.fr<br/>
+        Numero Compte LBA: SN04804001 000110340201 48</br>
+        Numéro Compte ECOBANK: 101390048001 
+    <div>
+       </td>
+    </tr>
+</table>
+
+    <h2 style="text-align: center;">Lettre de Voiture</h2>
+
+    <table>
+        <tr>
+            <th class="section-title">EXPÉDITEUR</th>
+            <th class="section-title">RÉCEPTEUR</th>
+        </tr>
+        <tr>
+            <td>Nature : {{ nature }}</td>
+            <td>Nom du réceptionnaire : ___________________________</td>
+        </tr>
+        <tr>
+            <td>Origine : {{ origine }}</td>
+            <td>Qualité : ___________________________</td>
+        </tr>
+        <tr>
+            <td>Poids : {{ poids_expediteur }}</td>
+            <td>Poids : ___________________________</td>
+        </tr>
+        <tr>
+            <td>Transporteur : {{ transporteur }}</td>
+            <td>Nombre de sacs : ___________________________</td>
+        </tr>
+        <tr>
+            <td>Chauffeur : {{ chauffeur }}</td>
+            <td>Nature : ___________________________</td>
+        </tr>
+        <tr>
+            <td>N° Camion : {{ numero_camion }}</td>
+            <td>Certifie avoir reçu du camion N° : __________________</td>
+        </tr>
+        <tr>
+            <td>Date : {{ date_expedition }}</td>
+            <td>Date et lieu de réception : ___________________________</td>
+        </tr>
+    </table></br>
+
+    <div class="footer">
+        <div class="signature">LE CLIENT</div></br>
+        <div class="signature">RÉSERVES</div>
+    </div>
+
+</body>
+</html>

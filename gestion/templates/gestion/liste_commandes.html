@@ -1,0 +1,81 @@
+{% extends 'gestion/base.html' %}
+{% block title %}Liste des Commandes{% endblock %}
+{% block content %}
+<h2>Liste des Commandes</h2>
+
+<a href="{% url 'dashboard_vendeur' %}" class="btn btn-success">
+            <i class="bi bi-file-earmark-arrow-down"></i> Accueil</a>
+<a href="{% url 'ajouter_commande' %}" class="btn btn-success ">
+    <i class="bi bi-file-earmark-arrow-down"></i> Ajouter une nouvelle commande
+</a>
+ <a href="{% url 'bon_commande' %}" class="btn btn-success ">
+        <i class="bi bi-file-earmark-arrow-down"></i> Ajouter un Bon✔
+</a>
+    <br></br>
+<a href="{% url 'commandes_prioritaires_pdf' %}" class="btn btn-outline-primary ms-2">
+   <i class="bi bi-file-earmark-pdf-fill"></i> Exporter les Prioritaires
+</a>
+<a href="{% url 'exporter_commandes_variete' 'Synergie' %}" class="btn btn-outline-primary ms-2">
+      <i class="bi bi-file-earmark-pdf-fill"> </i>Exporter commandes Synergie
+</a>
+<a href="{% url 'exporter_commandes_variete' 'Spunta' %}" class="btn btn-outline-primary ms-2">
+     <i class="bi bi-file-earmark-pdf-fill"></i>Exporter commandes Spunta 
+</a>
+<a href="{% url 'exporter_commandes_pdf' %}" class="btn btn-outline-primary ms-2">
+        <i class="bi bi-file-earmark-pdf-fill"></i> Exporter par client
+    </a>
+
+<a href="{% url 'exportons_commandes_pdf' %}" class="btn btn-outline-primary ms-2">
+    <i class="bi bi-file-earmark-pdf-fill"></i> Exporter la liste
+</a>
+<br></br>
+
+
+
+
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Client</th>
+            <th>Produits</th>
+             <th>Montant total</th>
+
+            <th>Avance</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for commande in commandes %}
+        <tr>
+            <td>{{ commande.id }}</td>
+            <td>{{ commande.client.nom }}  {{ commande.client.prenom }}</td>
+            <td>
+                <ul>
+                    {% for ligne in commande.lignes.all %}
+                    <li>{{ ligne.quantite }} {{ ligne.unite }} de {{ ligne.produit.variete }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>{{ commande.total }} F CFA</td>
+            <td>{{ commande.avance }} F CFA</td>
+
+                    <td>
+        <a href="{% url 'facture_commande' commande.id %}" class="btn btn-sm btn-outline-dark">
+    🧾 Facture PDF
+</a>
+        <a href="{% url 'modifier_commande' commande.id %}" class="btn btn-warning btn-sm">✏️</a>
+          <a href="{% url 'supprimer_commande' commande.id %}"  class="btn btn-sm btn-danger"
+                       onclick="return confirm('Supprimer cette commande ?');">🗑️</a>
+
+        </td>
+
+                               
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

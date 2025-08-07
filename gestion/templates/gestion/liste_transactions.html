@@ -1,0 +1,88 @@
+{% extends 'gestion/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'dashboard_vendeur' %}" class="btn btn-success">
+            <i class="bi bi-file-earmark-arrow-down"></i> Accueil</a>
+    <h2 class="mb-4">Liste des Transactions</h2>
+
+    <form method="get" class="row mb-4 g-2">
+        <div class="col-md-3">
+            <label>Compte</label>
+            <select name="compte" class="form-control">
+                <option value="">Tous</option>
+                {% for compte in comptes %}
+                    <option value="{{ compte.id }}" {% if compte.id|stringformat:"s" == compte_id %}selected{% endif %}>
+                        {{ compte.nom_banque }} - {{ compte.numero_compte }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>Type</label>
+            <select name="type" class="form-control">
+                <option value="">Tous</option>
+                <option value="entrée" {% if type_transaction == 'entrée' %}selected{% endif %}>Entrée</option>
+                <option value="sortie" {% if type_transaction == 'sortie' %}selected{% endif %}>Sortie</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>Date début</label>
+            <input type="date" name="date_debut" value="{{ date_debut }}" class="form-control">
+        </div>
+        <div class="col-md-2">
+            <label>Date fin</label>
+            <input type="date" name="date_fin" value="{{ date_fin }}" class="form-control">
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-success me-2">Filtrer</button>
+            <a href="{% url 'liste_transactions' %}" class="btn btn-secondary">Réinitialiser</a>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Montant</th>
+                <th>Compte</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr class="{% if transaction.type_transaction == 'entrée' %}table-success{% else %}table-danger{% endif %}">
+                <td>{{ transaction.date_transaction|date:"d/m/Y H:i" }}</td>
+                <td>{{ transaction.get_type_transaction_display }}</td>
+                <td>{{ transaction.montant }}</td>
+                <td>{{ transaction.compte.nom_banque }} - {{ transaction.compte.numero_compte }}</td>
+                <td>{{ transaction.description|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">Aucune transaction trouvée.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="row mt-4">
+    <div class="col-md-4">
+        <div class="alert alert-success">
+            <strong>Total Entrées :</strong> {{ total_entrees|floatformat:0 }} F
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="alert alert-danger">
+            <strong>Total Sorties :</strong> {{ total_sorties|floatformat:0 }} F
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="alert alert-info">
+            <strong>Solde Net :</strong> {{ solde_net|floatformat:0 }} F
+        </div>
+    </div>
+</div>
+
+    <a href="{% url 'ajouter_transaction' %}" class="btn btn-primary">+ Nouvelle Transaction</a>
+</div>
+{% endblock %}

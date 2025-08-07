@@ -1,0 +1,15 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Confirmer la suppression{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h4 class="mb-4">Voulez-vous vraiment supprimer la  commande : <strong>{{ commande.client}}</strong> ?</h4>
+
+  <form method="post">
+    {% csrf_token %}
+    <a href="{% url 'liste_commandes' %}" class="btn btn-secondary">Annuler</a>
+    <button type="submit" class="btn btn-danger">Oui, Supprimer</button>
+  </form>
+</div>
+{% endblock %}

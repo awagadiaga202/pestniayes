@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        body {
+            background-color: #f2f2f2;
+        }
+        .login-container {
+            margin-top: 100px;
+        }
+        .card {
+            padding: 30px;
+            border-radius: 10px;
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container login-container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="text-center">
+                <img src="{% static 'images/logo_prestniayes.jpg' %}" alt="Logo" class="logo">
+            </div>
+            <div class="card shadow-sm">
+                <h4 class="text-center mb-4">Connexion à votre espace</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            Identifiants incorrects. Veuillez réessayer.
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group mb-3">
+                        <label for="id_username">Nom d'utilisateur</label>
+                        {{ form.username|add_class:"form-control" }}
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="id_password">Mot de passe</label>
+                        {{ form.password|add_class:"form-control" }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends 'gestion/base.html' %}
+{% block title %}Remplir Lettre de Voiture{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Remplir la Lettre de Voiture</h2>
+    <form method="post" action="{% url 'lettre_voiture' %}">
+        {% csrf_token %}
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label>Nature</label>
+                <input type="text" class="form-control" name="nature" required>
+            </div>
+            <div class="col-md-6">
+                <label>Origine</label>
+                <input type="text" class="form-control" name="origine">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label>Poids (Expéditeur)</label>
+                <input type="text" class="form-control" name="poids_expediteur">
+            </div>
+            <div class="col-md-6">
+                <label>Transporteur</label>
+                <input type="text" class="form-control" name="transporteur">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label>Chauffeur</label>
+                <input type="text" class="form-control" name="chauffeur">
+            </div>
+            <div class="col-md-6">
+                <label>N° Camion</label>
+                <input type="text" class="form-control" name="numero_camion">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label>Date</label>
+                <input type="date" class="form-control" name="date_expedition">
+            </div>
+        </div>
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">📄 Générer le PDF</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

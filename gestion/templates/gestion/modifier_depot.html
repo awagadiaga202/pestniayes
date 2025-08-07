@@ -1,0 +1,12 @@
+{% extends 'gestion/base.html' %}
+{% block title %}Modifier le dépôt{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h3>Modifier le dépôt : {{ depot.nom }}</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+    </form>
+</div>
+{% endblock %}

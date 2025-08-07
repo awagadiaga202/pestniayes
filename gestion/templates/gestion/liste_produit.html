@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter un Produit{% endblock %}
+
+{% block content %}
+<div class="form-container mt-5">
+    <h3 class="mb-4 text-center text-success"><i class="bi bi-box-seam"></i> Ajouter un Produit</h3>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="id_nom" class="form-label"><i class="bi bi-tag"></i> Nom</label>
+            <input type="text" name="nom" class="form-control" id="id_nom" value="{{ form.nom.value|default_if_none:'' }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="id_description" class="form-label"><i class="bi bi-card-text"></i> Description</label>
+            <textarea name="description" class="form-control" id="id_description">{{ form.description.value|default_if_none:'' }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_prix_unitaire" class="form-label"><i class="bi bi-cash-coin"></i> Prix unitaire</label>
+            <input type="number" step="0.01" name="prix_unitaire" class="form-control" id="id_prix_unitaire" value="{{ form.prix_unitaire.value|default_if_none:'' }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="id_stock" class="form-label"><i class="bi bi-stack"></i> Stock</label>
+            <input type="number" name="stock" class="form-control" id="id_stock" value="{{ form.stock.value|default_if_none:'' }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="id_fournisseur" class="form-label"><i class="bi bi-truck"></i> Fournisseur</label>
+            {{ form.fournisseur }}
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> Enregistrer
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

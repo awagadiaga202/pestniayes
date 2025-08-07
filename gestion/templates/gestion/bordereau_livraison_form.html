@@ -1,0 +1,9 @@
+{% extends "gestion/base.html" %}
+{% block content %}
+<h2>Générer un Bordereau de Livraison</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Télécharger le Bordereau</button>
+</form>
+{% endblock %}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: sans-serif; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #444; padding: 6px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h2>Liste des Commandes</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Client</th>
+                <th>Produits</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commande in commandes %}
+            <tr>
+                <td>{{ commande.id }}</td>
+                <td>{{ commande.client.nom }} {{ commande.client.prenom }}</td>
+                <td>
+                    <ul>
+                        {% for ligne in commande.lignes.all %}
+                        <li>{{ ligne.quantite }} {{ ligne.unite }} de {{ ligne.produit.variete }} à {{ ligne.prix_unitaire }} F CFA</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{ commande.total }} F CFA</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

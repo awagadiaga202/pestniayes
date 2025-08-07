@@ -1,0 +1,40 @@
+{% extends 'gestion/base.html' %}
+{% block title %}Rapport Journalier{% endblock %}
+
+{% block content %}
+<h3 class="mt-4 mb-3">📆 Rapport du {{ date|date:"d M Y" }}</h3>
+
+{% if ventes %}
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Client</th>
+            <th>Produits</th>
+            <th>Total</th>
+            <th>Mode paiement</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vente in ventes %}
+        <tr>
+            <td>{{ vente.client.nom  }} {{vente.client.prenom }}</td>
+            <td>
+                <ul>
+                    {% for ligne in vente.lignes.all %}
+                    <li>{{ ligne.produit.variete }} ({{ ligne.quantite }}sac) - {{ ligne.montant_total }} F</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td><strong>{{ vente.montant_total }} F</strong></td>
+            <td>{{ vente.mode_paiement }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h5 class="text-end mt-3">💰 Total journalier : <strong>{{ total_journalier }} F</strong></h5>
+
+{% else %}
+<p class="alert alert-info">Aucune vente enregistrée aujourd’hui.</p>
+{% endif %}
+{% endblock %}

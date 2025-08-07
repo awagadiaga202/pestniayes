@@ -1,0 +1,116 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Accueil | Prest-Niayes{% endblock %}
+
+{% block content %}
+<div class="d-flex">
+    <!-- MENU LATÉRAL -->
+    <div class="bg-light border-end vh-100 p-3" style="width: 250px;">
+        <div class="text-center mb-4">
+            <img src="{% static 'images/logo_prestniayes.png' %}" alt="Prest-Niayes" style="width: 140px;">
+        </div>
+        <ul class="nav flex-column">
+            <a class="nav-link" href="{% url 'liste_clients' %}">
+                             👩‍👦‍👦Clients
+                        </a>  </li>
+                        <li class="nav-item">
+
+                        <a class="nav-link" href="{% url 'liste_fournisseurs' %}">
+                            🚌Fournisseurs
+                        </a>  </li>
+                         <li class="nav-item">
+
+                        <a class="nav-link" href="{% url 'liste_produits' %}">
+                               📦Produits
+                        </a>  </li>
+                        <li class="nav-item">
+
+                        <a class="nav-link" href="{% url 'liste_commandes' %}">
+                            🛒Commandes
+                        </a>  </li>
+                        
+                        <a class="nav-link" href="{% url 'liste_bons_commande' %}">
+                            🛒Bon de Commandes
+                        </a>  </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'liste_ventes' %}">
+                           💰 Ventes
+                        </a>  </li>
+                        
+                       
+                         <li class="nav-item">
+                        <a class="nav-link" href="{% url 'rapport_journalier' %}">
+                            🌟Rapport du jour 
+                        </a>  </li>
+                         <a class="nav-link" href="{% url 'liste_depots' %}">                     
+                          🏬Dépôt 
+                        </a>  </li>
+                         <li class="nav-item">
+                        <a class="nav-link" href="{% url 'liste_stocks' %}">                          
+                          ☀ Stock
+                        </a>  </li>
+                        <a class="nav-link" href="{% url 'liste_receptions' %}">                          
+                          📦Réceptionner
+                        </a>  </li>
+                        
+                        <li class="nav-item">
+                        <a class="nav-link" href="{% url 'facture_proforma' %}">
+                            📄Facture
+                        </a>  </li>
+                         <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ajouter_bordereau' %}">
+                            📄Bordereau
+                        </a>  </li>
+                         <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lettre_voiture' %}">
+                            📋 Lettre de Voiture
+                        </a>  </li>
+                        <a class="nav-link" href="{% url 'liste_comptes' %}">
+                            💰Comptes
+                        </a>  </li>
+                        <a class="nav-link" href="{% url 'liste_transactions' %}">
+                            💰Transactions
+                        </a>  </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}"> 
+                            🔒 Déconnexion
+                        </a>
+        </ul>
+    </div>
+
+    <!-- CONTENU CENTRAL -->
+    <div class="flex-grow-1 p-5 bg-white">
+        <h2 class="text-center mb-4">Bienvenue chez <strong>Prest-Niayes</strong></h2>
+        <div class="text-center my-4">
+    <h2 class="fw-bold" style="color: #007bff;">Prest-Niayes</h2>
+    <p class="fs-5 fst-italic">Cultivons l’avenir, nourrissons les générations.</p>
+</div>
+
+        
+        <div class="d-flex justify-content-center">
+            <!-- CAROUSEL -->
+            <div id="carouselProduits" class="carousel slide" data-bs-ride="carousel" style="max-width: 600px;">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'images/engrais.jpg' %}" class="d-block w-100" alt="Engrais">
+                    </div>
+                    <!-- <div class="carousel-item">
+                        <img src="{% static 'images/semences.jpg' %}" class="d-block w-100" alt="Semences">
+                    </div> -->
+                    <div class="carousel-item">
+                        <img src="{% static 'images/pomme.jpg' %}" class="d-block w-100" alt="Pommes de terre">
+                    </div> 
+                </div>
+                <!-- Contrôles -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselProduits" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselProduits" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

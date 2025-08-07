@@ -1,0 +1,31 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Confirmation de suppression{% endblock %}
+
+{% block content %}
+<div class="form-container mt-4 text-center">
+    <h5>Voulez-vous vraiment supprimer <strong>{{ objet.nom }}</strong> ?</h5>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+        <a href="{{ retour_url }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+
+<!-- confirmer_suppression.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmer la suppression</title>
+</head>
+<body>
+    <h2>Êtes-vous sûr de vouloir supprimer cette {{ type }} ?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Oui, supprimer</button>
+        <a href="javascript:history.back()">Annuler</a>
+    </form>
+</body>
+</html>
+
+{% endblock %}

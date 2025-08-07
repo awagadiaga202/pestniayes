@@ -1,0 +1,154 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Facture Vente #{{ vente.id }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            color: #333;
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        header img.logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: auto;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+        header .info-entreprise {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .coordonnees {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+        .coordonnees strong {
+            display: inline-block;
+            width: 120px;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table thead th {
+            border-bottom: 2px solid #000;
+            padding: 8px;
+            background-color: #f5f5f5;
+        }
+        table tbody td {
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        table tfoot td {
+            padding: 8px;
+            font-weight: bold;
+            border-top: 2px solid #000;
+            text-align: right;
+        }
+
+        .signature {
+            margin-top: 60px;
+            text-align: right;
+            font-size: 14px;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+            width: 300px;
+            float: right;
+        }
+
+    </style>
+</head>
+<body>
+
+<table style="width: 100%; border: 2px solid #000; border-radius: 10px; background-color: #f2f2f2; margin-bottom: 20px;" cellspacing="0" cellpadding="10">
+               <tr>
+ <td style="text-align: center;">
+    
+    {% if logo_base64 %}
+    <img src="data:image/jpg;base64,{{ logo_base64 }}" alt="Logo Prest-Niayes" style="width: 120px; height: auto;" /></br>
+    {% endif %}
+        République du Sénégal<br/>
+        Entreprise Prest-Niayes<br/>
+    Localisation : Notto Gouye Diama, Sénégal<br/>
+        RC: SN THS 2018 A 3014 - NINEA: 006906400 <br/>
+        Téléphone : +221 77 477 17 07 | +221 77 996 96 56| +221 76 016 91 94<br/>
+        Email : mbayeb2@live.fr<br/>
+        Numero Compte LBA: SN04804001 000110340201 48</br>
+        Numéro Compte ECOBANK: 101390048001 
+    <div>
+       </td>
+    </tr>
+</table>
+<section>
+    <h2>Facture N° : {{ vente.id }}</h2>
+    <p>Date : {{ vente.date_vente|date:"d/m/Y" }}</p>
+<p><strong>Client :</strong> 
+    {% if vente.client %}
+        {{ vente.client.nom }} 
+    {% else %}
+        Particulier
+    {% endif %}
+</p>
+</section>
+
+<table class="section"> 
+    <thead>
+        <tr>
+            <th>Produit</th>
+            <th>Prix Unitaire (FCFA)</th>
+            <th>Quantité( en Sac)</th>
+            <th>Remise (%)</th>
+            <th>Montant</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ligne in vente.lignes.all %}
+        <tr>
+            <td>{{ ligne.produit.variete }}</td>
+            <td>{{ ligne.produit.prix_unitaire|floatformat:0 }}</td>
+            <td>{{ ligne.quantite }} sac</td>
+            <td>{{ ligne.remise|default:"0" }}</td>
+            <td>{{ ligne.montant_total }}</td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+           <tr>
+                    <th colspan="3">Total</th>
+                    <th>{{ vente.montant_total }} F</th>
+                
+        </tr>
+    </tfoot>
+</table>
+<div class="signature">
+    <strong>Signature / Cachet</strong>
+    <br/>
+    _______________________</br>
+    <p><em>Fait à Notto Gouye Diama, le : {{ vente.date_vente|date:"d/m/Y" }}</em></p>
+</div>
+
+</body>
+</html>

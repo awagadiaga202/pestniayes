@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Créer Facture Pro Forma</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        h1 { text-align: center; }
+        form { max-width: 800px; margin: auto; }
+        label { display: block; margin-top: 15px; }
+        input, textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #f5f5f5; }
+        button { margin-top: 15px; padding: 10px 15px; }
+        .remove-btn { color: red; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Créer une Facture Pro Forma</h1>
+    <form method="post" id="proforma-form">
+        {% csrf_token %}
+        <label>Nom du client :
+            <input type="text" name="client_nom" />
+        </label>
+        <label>Entreprise :
+            <input type="text" name="client_entreprise" />
+        </label>
+        <label>Adresse :
+            <textarea name="client_adresse" rows="3"></textarea>
+        </label>
+
+        <h2>Produits</h2>
+        <table id="produits-table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix unitaire (FCFA)</th>
+                    <th>Remise (%)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Lignes ajoutées ici -->
+            </tbody>
+        </table>
+        <button type="button" id="add-ligne">Ajouter un produit</button>
+
+        <!-- Champ caché pour envoyer les lignes JSON -->
+        <input type="hidden" name="lignes" id="lignes-json" />
+
+        <button type="submit">Générer la facture pro forma</button>
+    </form>
+
+    <script>
+        const addBtn = document.getElementById('add-ligne');
+        const tbody = document.querySelector('#produits-table tbody');
+        const form = document.getElementById('proforma-form');
+        const lignesInput = document.getElementById('lignes-json');
+
+        function createRow() {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="produit" required /></td>
+                <td><input type="number" class="quantite" min="1" value="1" required /></td>
+                <td><input type="number" class="prix_unitaire" min="0" step="0.01" value="0" required /></td>
+                <td><input type="number" class="remise" min="0" max="100" step="0.01" value="0" /></td>
+                <td><span class="remove-btn">❌</span></td>
+            `;
+            tbody.appendChild(tr);
+
+            tr.querySelector('.remove-btn').addEventListener('click', () => {
+                tr.remove();
+            });
+        }
+
+        addBtn.addEventListener('click', createRow);
+
+        form.addEventListener('submit', e => {
+            const lignes = [];
+            const rows = tbody.querySelectorAll('tr');
+            if (rows.length === 0) {
+                alert('Ajoutez au moins un produit');
+                e.preventDefault();
+                return;
+            }
+            rows.forEach(tr => {
+                const produit = tr.querySelector('.produit').value.trim();
+                const quantite = parseInt(tr.querySelector('.quantite').value);
+                const prix_unitaire = parseFloat(tr.querySelector('.prix_unitaire').value);
+                const remise = parseFloat(tr.querySelector('.remise').value) || 0;
+
+                if (!produit || quantite <= 0 || prix_unitaire < 0 || remise < 0) {
+                    alert('Vérifiez les valeurs des produits');
+                    e.preventDefault();
+                    return;
+                }
+
+                lignes.push({ produit, quantite, prix_unitaire, remise });
+            });
+            lignesInput.value = JSON.stringify(lignes);
+        });
+
+        // Ajout d'une ligne par défaut au chargement
+        createRow();
+    </script>
+</body>
+</html>

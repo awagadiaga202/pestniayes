@@ -1,0 +1,12 @@
+{% extends 'gestion/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3>Supprimer le compte</h3>
+    <p>Êtes-vous sûr de vouloir supprimer le compte <strong>{{ compte.nom_banque }} - {{ compte.numero_compte }}</strong> ?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+        <a href="{% url 'liste_comptes' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}

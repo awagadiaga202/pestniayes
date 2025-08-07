@@ -1,0 +1,45 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="mb-3 text-end">
+    <a href="{% url 'dashboard_vendeur' %}" class="btn btn-success">
+            <i class="bi bi-file-earmark-arrow-down"></i> Accueil</a>
+        <a href="{% url 'ajouter_compte' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Ajouter un Fournisseur
+        </a>
+    </div>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Liste des Comptes Bancaires</h2>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Banque</th>
+                <th>Numéro de Compte</th>
+                <th>Solde (FCFA)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for compte in comptes %}
+                <tr>
+                    <td>{{ compte.nom_banque }}</td>
+                    <td>{{ compte.numero_compte }}</td>
+                    <td>{{ compte.solde|floatformat:0 }}</td>
+                    <td>
+                        <a href="{% url 'modifier_compte' compte.id %}" class="btn btn-sm btn-primary"> <i class="bi bi-pencil-square"></i></a>
+                        <a href="{% url 'supprimer_compte' compte.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Confirmer la suppression ?')"> <i class="bi bi-trash"></i></a>
+                          
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">Aucun compte trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

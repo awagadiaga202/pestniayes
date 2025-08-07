@@ -1,0 +1,98 @@
+{% extends 'gestion/base.html' %}
+{% block title %}Ajouter un Produit{% endblock %}
+
+{% block content %}
+<div class="form-container mt-4">
+    <h3 class="text-center mb-4">Ajouter un Produit</h3>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Nom -->
+        <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <select id="id_nom" name="nom" class="form-select" onchange="updateVarietes()">
+                <option value="">Sélectionner</option>
+                <option value="semence">Semence</option>
+                <option value="engrais">Engrais</option>
+                <option value="Pomme de terre">Pomme de terre</option>
+                <option value="sac">Sac</option>
+
+
+            </select>
+        </div>
+
+        <!-- Variété -->
+        <div class="mb-3">
+            <label class="form-label">Variété</label>
+            <select id="id_variete" name="variete" class="form-select">
+                <option value="">Sélectionner le nom d’abord</option>
+            </select>
+        </div>
+
+        <!-- Autres champs -->
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            {{ form.description }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Prix unitaire</label>
+            {{ form.prix_unitaire }}
+        </div>
+
+        <!-- Le stock est maintenant géré par dépôt, donc on ne le saisit plus ici -->
+
+
+        <div class="mb-3">
+            <label class="form-label">Unité de stock</label>
+            {{ form.unite_stock }}
+            </div>
+
+
+        <div class="mb-3">
+            <label class="form-label">Fournisseur</label>
+            {{ form.fournisseur }}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
+    </form>
+</div>
+
+<!-- Script pour mettre à jour les variétés -->
+<script>
+  function updateVarietes() {
+    const nom = document.getElementById('id_nom').value;
+    const varieteSelect = document.getElementById('id_variete');
+
+    // Vide les anciennes options
+    varieteSelect.innerHTML = '';
+
+    // Ajouter l'option par défaut
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Sélectionner la variété';
+    varieteSelect.appendChild(defaultOption);
+
+    let options = [];
+
+    if (nom === 'semence') {
+      options = ['Lilia', 'Spunta', 'Synergie', 'Kenza', 'Selena', 'Najah'];
+    } else if (nom === 'engrais') {
+      options = ['Uree', 'DAP', 'NPK 10 10 20', 'NPK 15 15 15', '6 20 10'];
+    } else if (nom === 'Pomme de terre') {
+      options = ['Pomme de terre blanche', 'Pomme de terre Rouge'];
+    } else if (nom === 'sac') {
+      options = ['Sac de 25kg', 'Sac de 15kg'];
+    }
+
+    // Remplir les options
+    options.forEach(function(item) {
+      const option = document.createElement('option');
+      option.value = item;
+      option.textContent = item;
+      varieteSelect.appendChild(option);
+    });
+  }
+</script>
+
+{% endblock %}

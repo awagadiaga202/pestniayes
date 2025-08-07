@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Facture Pro Forma</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; color: #333; }
+        header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        header h1 { margin: 0; font-size: 24px; }
+        .info-client, .info-entreprise, .info-facture { margin-bottom: 20px; }
+        .info-entreprise, .info-facture { font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #f5f5f5; }
+        tfoot td { font-weight: bold; }
+        .total { text-align: right; }
+        footer { text-align: center; font-size: 12px; margin-top: 40px; border-top: 1px solid #ddd; padding-top: 10px; }
+        .logo { width: 100px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+<header>
+
+<table style="width: 100%; border: 2px solid #000; border-radius: 10px; background-color: #f2f2f2; margin-bottom: 20px;" cellspacing="0" cellpadding="10">
+               <tr>
+ <td style="text-align: center;">
+    
+    {% if logo_base64 %}
+    <img src="data:image/jpg;base64,{{ logo_base64 }}" alt="Logo Prest-Niayes" style="width: 120px; height: auto;" /></br>
+    {% endif %}
+        République du Sénégal<br/>
+        Entreprise Prest-Niayes<br/>
+    Localisation : Notto Gouye Diama, Sénégal<br/>
+        RC: SN THS 2018 A 3014 - NINEA: 006906400 <br/>
+        Téléphone : +221 77 477 17 07 | +221 77 996 96 56| +221 76 016 91 94<br/>
+        Email : mbayeb2@live.fr<br/>
+        Numero Compte LBA: SN04804001 000110340201 48</br>
+        Numéro Compte ECOBANK: 101390048001 
+    <div>
+       </td>
+    </tr>
+</table>
+<section>
+    
+
+</section>
+
+<table class="section"> 
+</header>
+
+<section class="info-facture">
+    <strong>Facture n° : </strong> {{ numero_facture }}<br />
+    <strong>Date : </strong> {{ date_facture }}<br />
+    <strong>Valable jusqu’au : </strong> {{ date_validite }}<br />
+
+</section>
+
+<section class="info-client">
+    <strong>Entreprise:</strong>    
+    {% if client_entreprise %}{{ client_entreprise }}<br />
+        <strong>Client :</strong>
+
+{% endif %}
+    {% if client_nom %}{{ client_nom }}<br />
+        <strong>Adresse:</strong>
+{% endif %}
+    {% if client_adresse %}{{ client_adresse|linebreaksbr }}<br />{% endif %}
+</section>
+
+<table>
+    <thead>
+        <tr>
+            <th>Désignation</th>
+            <th>Quantité (en Tonne)</th>
+            <th>Prix Unitaire (FCFA)</th>
+            <th>Remise (%)</th>
+            <th>Montant (FCFA)</th>             
+        </tr>
+    </thead>
+    <tbody>
+        {% for ligne in lignes %}
+        <tr>
+            <td>{{ ligne.produit }}</td>
+            <td>{{ ligne.quantite }}</td>
+            <td>{{ ligne.prix_unitaire }}</td>
+            <td>{{ ligne.remise }}</td>
+            <td>{{ ligne.montant }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4" class="total">Total à payer</td>
+            <td>{{ total }}</td>
+        </tr>
+    </tfoot>
+</table>
+<br><br>
+<div style="margin-top: 50px;">
+    <strong>Le Directeur</strong></br>
+    {% if cachet_signature_base64 %}
+        <img src="data:image/jpeg;base64,{{ cachet_signature_base64 }}" alt="Cachet" style="width: 150px; margin-top: 10px;" />
+    {% endif %}
+</div>
+<footer>
+    Facture Pro Forma générée par Prest-Niayes. Cette facture n'a pas de valeur comptable.
+</footer>
+</body>
+</html>

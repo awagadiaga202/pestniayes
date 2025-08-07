@@ -1,0 +1,84 @@
+{% extends 'gestion/base.html' %}
+{% block title %}Liste des Réceptions{% endblock %}
+
+{% block content %}
+<div class="text-end">
+    <a href="{% url 'dashboard_vendeur' %}" class="btn btn-success">
+            <i class="bi bi-file-earmark-arrow-down"></i> Accueil</a>
+        <a href="{% url 'ajouter_reception' %}" class="btn btn-success">
+            
+            <i class="bi bi-plus-circle"></i> Nouvelle Réception
+        </a>
+    </div>
+<div class="container mt-4">
+    <h3 class="text-center mb-4">Historique des Réceptions</h3>
+    <form method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label class="form-label">Produit</label>
+        <select name="produit" class="form-select">
+            <option value="">Tous</option>
+            {% for p in produits %}
+                <option value="{{ p.id }}" {% if produit_filtre == p.id|stringformat:"s" %}selected{% endif %}>
+                    {{ p.nom }} - {{ p.variete }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Dépôt</label>
+        <select name="depot" class="form-select">
+            <option value="">Tous</option>
+            {% for d in depots %}
+                <option value="{{ d.id }}" {% if depot_filtre == d.id|stringformat:"s" %}selected{% endif %}>
+                    {{ d.nom }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Date début</label>
+        <input type="date" name="date_debut" class="form-control" value="{{ date_debut }}">
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Date fin</label>
+        <input type="date" name="date_fin" class="form-control" value="{{ date_fin }}">
+    </div>
+    <div class="col-md-2 align-self-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+    </div>
+</form>
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Dépôt</th>
+                <th>Quantité</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in receptions %}
+            <tr>
+                <td>{{ r.produit.nom }} - {{ r.produit.variete }}</td>
+                <td>{{ r.depot.nom }}</td>
+                <td>{{ r.quantite }}</td>
+                <td>{{ r.date_reception|date:"d/m/Y H:i" }}</td>
+                <td>
+                <a href="{% url 'modifier_reception' r.pk %}" class="btn btn-primary btn-sm">✏️</a>
+                <a href="{% url 'supprimer_reception' r.pk %}" class="btn btn-danger btn-sm">🗑️</a>
+            </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">Aucune réception enregistrée</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+</div>
+{% endblock %}

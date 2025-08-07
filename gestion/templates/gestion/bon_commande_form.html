@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un Bon de Commande</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        label { display: block; margin-top: 10px; }
+        input, textarea { width: 100%; padding: 6px; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 8px; border: 1px solid #ddd; text-align: center; }
+        .btn { padding: 10px 15px; background: #0066cc; color: white; border: none; margin-top: 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Créer un Bon de Commande</h2>
+    <form method="POST" onsubmit="return prepareData()">
+        {% csrf_token %}
+        <label for="fournisseur_entreprise">Entreprise du Fournisseur :</label>
+        <input type="text" name="fournisseur_entreprise" required />
+
+        <label for="fournisseur_nom">Nom du Fournisseur :</label>
+        <input type="text" name="fournisseur_nom" required />
+
+        <label for="fournisseur_adresse">Adresse du Fournisseur :</label>
+        <textarea name="fournisseur_adresse" rows="3" required></textarea>
+        <label for="numero_vehicule">Numéro du Véhicule :</label>
+        <input type="text" name="numero_vehicule" required />
+        <div class="mb-3">
+        <label for="date_commande" class="form-label">Date de la commande</label>
+        <input type="date" id="date_commande" name="date_commande" class="form-control" required>
+        </div>
+
+
+        <h3>Lignes de Commande</h3>
+        <table id="ligne-table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix Unitaire</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="lignes-body">
+                <tr>
+                    <td><input type="text" class="produit" required></td>
+                    <td><input type="number" class="quantite" min="1" value="1" required></td>
+                    <td><input type="number" class="prix_unitaire" step="0.01" required></td>
+                    <td><button type="button" onclick="supprimerLigne(this)">Supprimer</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" onclick="ajouterLigne()">Ajouter une ligne</button>
+
+        <input type="hidden" name="lignes" id="lignes-input" />
+        <button type="submit" class="btn">Télécharger le Bon de Commande</button>
+    </form>
+
+    <script>
+        function ajouterLigne() {
+            const table = document.getElementById("lignes-body");
+            const row = table.insertRow();
+            row.innerHTML = `
+                <td><input type="text" class="produit" required></td>
+                <td><input type="number" class="quantite" min="1" value="1" required></td>
+                <td><input type="number" class="prix_unitaire" step="0.01" required></td>
+                <td><button type="button" onclick="supprimerLigne(this)">Supprimer</button></td>
+            `;
+        }
+
+        function supprimerLigne(btn) {
+            const row = btn.closest("tr");
+            row.remove();
+        }
+
+        function prepareData() {
+            const rows = document.querySelectorAll("#lignes-body tr");
+            const lignes = [];
+
+            rows.forEach(row => {
+                lignes.push({
+                    produit: row.querySelector(".produit").value,
+                    quantite: row.querySelector(".quantite").value,
+                    prix_unitaire: row.querySelector(".prix_unitaire").value,
+                });
+            });
+
+            document.getElementById("lignes-input").value = JSON.stringify(lignes);
+            return true;
+        }
+    </script>
+</body>
+</html>

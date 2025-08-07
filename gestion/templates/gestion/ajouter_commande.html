@@ -1,0 +1,175 @@
+{% extends 'gestion/base.html' %}
+{% block title %}Ajouter une Commande{% endblock %}
+{% block content %}
+
+<!-- CSS Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h3 class="text-center mb-4">Nouvelle Commande</h3>
+
+    <form method="post" id="commande-form">
+        {% csrf_token %}
+<div class="mb-3">
+    <label for="id_client" class="form-label">Client</label>
+    {{ form_commande.client }}
+    <a href="{% url 'ajouter_client' %}" class="btn btn-sm btn-outline-primary ms-2" target="_blank">
+        ➕ Nouveau client
+    </a>
+</div>
+<div class="mb-3">
+    <label for="id_remise" class="form-label">Remise</label>
+    {{ form_commande.remise }}
+</div>
+
+<div class="mb-3">
+    <label for="id_avance" class="form-label">Avance</label>
+    {{ form_commande.avance }}
+</div>
+
+
+        <table class="table table-bordered" id="formset-table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Unité</th>
+                    <th>Prix unitaire</th>
+                    <th>Montant</th>
+                    <th>Supprimer</th>
+
+                </tr>
+            </thead>
+            <tbody id="formset-body">
+                {{ formset_lignes.management_form }}
+                {% for form in formset_lignes %}  {{ form.id }}
+                    <tr class="formset-row">
+                        <td>{{ form.produit }}</td>
+                        <td>{{ form.quantite }}</td>
+                        <td>{{ form.unite }}</td>
+                        <td><span class="prix-unitaire">—</span></td>
+                        <td><span class="montant-ligne">0 F</span></td>
+                        <td>{{ form.DELETE }}</td> <!-- Le champ suppression -->
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+<button type="button" id="ajouter-ligne" class="btn btn-secondary">➕ Ajouter une ligne</button>
+
+        <div class="mt-3 text-end">
+            <h5>Total de la commande : <span id="total-general">0 F</span></h5>
+        </div>
+
+        <br><br>
+        <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+    </form>
+</div>
+
+<!-- JS jQuery et Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialiser Select2 sur le champ client
+        $('#id_client').select2({
+            placeholder: "Choisissez un client",
+            allowClear: true,
+            width: '100%'
+        });
+
+        const prixProduits = {
+            {% for produit in produits %}
+                "{{ produit.id }}": {{ produit.prix_unitaire }},
+            {% endfor %}
+        };
+
+        function updatePrixEtMontant(row) {
+            const select = row.querySelector('select[name$="-produit"]');
+            const quantiteInput = row.querySelector('input[name$="-quantite"]');
+            const prixEl = row.querySelector('.prix-unitaire');
+            const montantEl = row.querySelector('.montant-ligne');
+
+            const produitId = select.value;
+            const prix = prixProduits[produitId] || 0;
+            const quantite = parseFloat(quantiteInput.value) || 0;
+
+            prixEl.textContent = prix ? prix.toFixed(2) + " F" : "—";
+            montantEl.textContent = (prix * quantite).toFixed(2) + " F";
+
+            mettreAJourTotalGeneral();
+        }
+
+        function mettreAJourTotalGeneral() {
+            let total = 0;
+            document.querySelectorAll('.montant-ligne').forEach(span => {
+                const montant = parseFloat(span.textContent.replace(" F", "")) || 0;
+                total += montant;
+            });
+            document.getElementById('total-general').textContent = total.toFixed(2) + " F";
+        }
+
+        function ajouterListeners(row) {
+            const select = row.querySelector('select[name$="-produit"]');
+            const quantiteInput = row.querySelector('input[name$="-quantite"]');
+
+            if (select && quantiteInput) {
+                select.addEventListener('change', () => updatePrixEtMontant(row));
+                quantiteInput.addEventListener('input', () => updatePrixEtMontant(row));
+                updatePrixEtMontant(row);
+            }
+        }
+
+        // Initialiser les lignes existantes
+        document.querySelectorAll('.formset-row').forEach(row => {
+            ajouterListeners(row);
+        });
+
+        // Ajouter une ligne
+        const btnAjouter = document.getElementById('ajouter-ligne');
+        const tbody = document.getElementById('formset-body');
+        const totalForms = document.getElementById('id_lignes-TOTAL_FORMS');
+
+
+        btnAjouter.addEventListener('click', function () {
+            const formCount = parseInt(totalForms.value);
+            const firstRow = tbody.querySelector('.formset-row');
+            if (!firstRow) return;
+
+            const newRow = firstRow.cloneNode(true);
+
+            newRow.querySelectorAll('input, select').forEach(el => {
+                el.name = el.name.replace(/lignes-(\d+)-/, `lignes-${formCount}-`);
+                el.id = el.id.replace(/lignes-(\d+)-/, `lignes-${formCount}-`);
+
+
+                 if (el.tagName === 'INPUT') el.value = '';
+                if (el.tagName === 'SELECT') el.selectedIndex = 0;
+            });
+
+            newRow.querySelector('.prix-unitaire').textContent = '—';
+            newRow.querySelector('.montant-ligne').textContent = '0 F';
+
+            tbody.appendChild(newRow);
+            totalForms.value = formCount + 1;
+            ajouterListeners(newRow);
+            mettreAJourTotalGeneral();
+        });
+    });
+</script>
+{% if form_commande.errors %}
+    <div class="alert alert-danger">
+        {{ form_commande.errors }}
+    </div>
+{% endif %}
+
+{% if formset_lignes.errors %}
+    <div class="alert alert-danger">
+        {{ formset_lignes.errors }}
+    </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Liste des Produits{% endblock %}
+
+{% block content %}
+ <div class="mb-3 text-end">
+    <a href="{% url 'dashboard_vendeur' %}" class="btn btn-success">
+            <i class="bi bi-file-earmark-arrow-down"></i> Accueil</a>
+        <a href="{% url 'ajouter_produit' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Ajouter un Produit
+        </a>
+    </div>
+<div class="container mt-4">
+    <h3 class="text-center mb-4">Liste des Produits</h3>
+
+    <!-- Filtres -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Nom</label>
+            <select name="nom" class="form-select">
+                <option value="">Tous</option>
+                <option value="semence" {% if nom_filtre == "semence" %}selected{% endif %}>Semence</option>
+                <option value="engrais" {% if nom_filtre == "engrais" %}selected{% endif %}>Engrais</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Fournisseur</label>
+            <select name="fournisseur" class="form-select">
+                <option value="">Tous</option>
+                {% for f in fournisseurs %}
+                    <option value="{{ f.id }}" {% if fournisseur_filtre == f.id|stringformat:"s" %}selected{% endif %}>{{ f.entreprise }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4 align-self-end">
+            <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+        </div>
+    </form>
+
+    <!-- Tableau -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Variété</th>
+                <th>Description</th>
+                <th>Prix Unitaire</th>
+                <th>Stock</th>
+                <th>Unité</th>
+                <th>Fournisseur</th>
+                <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for produit in produits %}
+            <tr>
+                <td>{{ produit.nom }}</td>
+                <td>{{ produit.variete }}</td>
+                <td>{{ produit.description }}</td>
+                <td>{{ produit.prix_unitaire }} F</td>
+                <td>{{ produit.stock_total }}</td>
+                <td>{{ produit.get_unite_stock_display }}</td>
+
+                <td>{{ produit.fournisseur.entreprise }}</td>
+                <td>
+                    <a href="{% url 'modifier_produit' produit.id %}"  class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a href="{% url 'supprimer_produit' produit.id %}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">Aucun produit trouvé</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+   
+</div>
+{% endblock %}
