@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
-#from decouple import config
 
 from pathlib import Path
 
@@ -25,16 +24,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-85#@(ywfc--%tshnk4q1@ol7mb_0*5m=394$e1#bp2xz6*f0g-'
+#SECRET_KEY = 'django-insecure-85#@(ywfc--%tshnk4q1@ol7mb_0*5m=394$e1#bp2xz6*f0g-'
 
-DEBUG = True
-
-
+DEBUG = False
 
 
-#SECRET_KEY = config('SECRET_KEY') 
-#DEBUG = config('DEBUG', default=False, cast=bool)
-#ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
 
 
 
