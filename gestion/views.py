@@ -1031,17 +1031,7 @@ def rapport_journalier(request):
     }
     return render(request, 'gestion/rapport_journalier.html', context)
 
-def rapport_journalier(request):
-    aujourd_hui = now().date()
-    ventes = Vente.objects.filter(date_vente__date=aujourd_hui).prefetch_related('lignes__produit', 'client')
-    
-    total_journalier = sum(vente.montant_total for vente in ventes)
 
-    return render(request, 'gestion/rapport_journalier.html', {
-        'ventes': ventes,
-        'total_journalier': total_journalier,
-        'date': aujourd_hui
-    })
 
 
 def generer_facture_pdf(request, vente_id):

@@ -127,7 +127,6 @@ class CompteBancaireForm(forms.ModelForm):
             'numero_compte': forms.TextInput(attrs={'class': 'form-control'}),
             'solde': forms.NumberInput(attrs={'class': 'form-control'}),
         }
-        from django import forms
 
 class TransactionForm(forms.ModelForm):
     date_transaction = forms.DateTimeField(
