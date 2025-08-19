@@ -4,14 +4,16 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "prestniayes.settings")
 django.setup()
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
-username = "awa"
-email = "gadiagaawa2@.com"
-password = "awa12345"
+User = get_user_model()
+
+username = "admin"
+password = "admin123"
+email = "admin@example.com"
 
 if not User.objects.filter(username=username).exists():
-    User.objects.create_superuser(username=username, email=email, password=password)
-    print("Superuser créé ✅")
+    User.objects.create_superuser(username=username, email=email, password=password, role="admin")
+    print("Superuser created ✅")
 else:
-    print("Superuser existe déjà ❌")
+    print("Superuser already exists ⚡")
