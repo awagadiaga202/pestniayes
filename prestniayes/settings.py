@@ -20,7 +20,8 @@ import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -129,10 +130,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # seulement si tu as un dossier /static en dev
 
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Où collectstatic va copier les fichiers
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Ton dossier local static
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
