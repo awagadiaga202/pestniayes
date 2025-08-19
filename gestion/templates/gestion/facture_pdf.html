@@ -105,7 +105,7 @@
     <p>Date : {{ vente.date_vente|date:"d/m/Y" }}</p>
 <p><strong>Client :</strong> 
     {% if vente.client %}
-        {{ vente.client.nom }} 
+       {{ vente.client.prenom }}  {{ vente.client.nom }} 
     {% else %}
         Particulier
     {% endif %}
@@ -117,7 +117,7 @@
         <tr>
             <th>Produit</th>
             <th>Prix Unitaire (FCFA)</th>
-            <th>Quantité( en Sac)</th>
+            <th>Quantité( en Sacs)</th>
             <th>Remise (%)</th>
             <th>Montant</th>
         </tr>

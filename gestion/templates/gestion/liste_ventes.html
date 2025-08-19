@@ -3,49 +3,58 @@
 {% block title %}Liste des Ventes{% endblock %}
 
 {% block content %}
-
 <div class="container mt-4">
-    <div class="text-end mt-3">
-        <a href="{% url 'dashboard_vendeur' %}" class="btn btn-success">
-            <i class="bi bi-file-earmark-arrow-down"></i> Accueil</a>  
-        <a href="{% url 'ajouter_vente' %}" class="btn btn-success">
-            <i class="bi bi-file-earmark-arrow-down"></i> Ajouter une Vente
-            
-        </a>  </div>
-    <a href="{% url 'exporter_ventes_variete' 'Uree' %}" class="btn btn-outline-primary">
-    Exporter ventes Uree
-    </a>
-    <a href="{% url 'exporter_ventes_variete' 'Pomme de terre blanche' %}" class="btn btn-outline-primary">
-    Exporter ventes Pomme de terre Blanche
-    </a>
-    <a href="{% url 'exporter_ventes_variete' 'Pomme de terre Rouge' %}" class="btn btn-outline-primary">
-    Exporter vente Pomme de terre Rouge
-    </a>  </div>
-    <div class="text-end mt-3"></div>
-    <a href="{% url 'exporter_ventes_client_pdf' 'Sadidal SARL' %}" class="btn btn-outline-primary">
-    Exporter ventes de Sadidal
-</a>
- <a href="{% url 'exporter_ventes_client_pdf' 'Swami Agri' %}" class="btn btn-outline-primary">
-    Exporter ventes de Swami Agri
-</a>
-
-
-
+    <!-- Boutons Accueil et Ajouter une Vente -->
+    <div class="text-end mt-3 mb-3">
+        <div class="btn-group" role="group" aria-label="Navigation principale">
+            <a href="{% url 'dashboard_vendeur' %}" class="btn btn-success">
+                <i class="bi bi-house"></i> Accueil
+            </a>
+            <a href="{% url 'ajouter_vente' %}" class="btn btn-success">
+                <i class="bi bi-plus"></i> Ajouter une Vente
+            </a>
+        </div>
     </div>
+
+    <!-- Dropdown Export par variété -->
+    <div class="dropdown d-inline-block mb-3 me-2">
+        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Exporter les ventes par variété
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'exporter_ventes_variete' 'Uree' %}">Uree</a></li>
+            <li><a class="dropdown-item" href="{% url 'exporter_ventes_variete' 'Pomme de terre blanche' %}">Pomme de terre Blanche</a></li>
+            <li><a class="dropdown-item" href="{% url 'exporter_ventes_variete' 'Pomme de terre Rouge' %}">Pomme de terre Rouge</a></li>
+        </ul>
+    </div>
+
+    <!-- Dropdown Export par client -->
+    <div class="dropdown d-inline-block mb-3">
+        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Exporter les ventes par client
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'exporter_ventes_client_pdf' 'Sadidal SARL' %}">Sadidal SARL</a></li>
+            <li><a class="dropdown-item" href="{% url 'exporter_ventes_client_pdf' 'Swami Agri' %}">Swami Agri</a></li>
+        </ul>
+    </div>
+
     <h3 class="mb-4 text-center">Liste des Ventes</h3>
+
+    <!-- Formulaire de recherche -->
     <form method="get" class="row mb-3">
-    <div class="col-md-6">
-        <input type="text" name="client" value="{{ client_nom }}" class="form-control" placeholder="Rechercher par nom du client">
-    </div>
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">🔍 Rechercher</button>
-    </div>
-    <div class="col-md-2">
-        <a href="{% url 'liste_ventes' %}" class="btn btn-secondary w-100">↺ Réinitialiser</a>
-    </div>
-</form>
+        <div class="col-md-6">
+            <input type="text" name="client" value="{{ client_nom }}" class="form-control" placeholder="Rechercher par nom du client">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">🔍 Rechercher</button>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'liste_ventes' %}" class="btn btn-secondary w-100">↺ Réinitialiser</a>
+        </div>
+    </form>
 
-
+    <!-- Tableau des ventes -->
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
@@ -63,31 +72,39 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ vente.date_vente|date:"d/m/Y H:i" }}</td>
-                <td>{{ vente.client.nom }}</td>
+                <td>{{ vente.client.prenom }} {{ vente.client.nom }}</td>
                 <td>{{ vente.vendeur }}</td>
-               <td>
-                    {% for ligne in vente.lignes.all %}
-                        <li>{{ ligne.produit.variete}} ({{ ligne.quantite }} sacs)</li>
-                    {% endfor %}
-
-                    </td>
-                    
-                    <td>{{ vente.montant_total|floatformat:2 }} F</td>
                 <td>
-                    <a href="{% url 'facture_vente' vente.id %}" class="btn btn-sm btn-primary">🧾 Facturer</a>
-                    <a href="{% url 'modifier_vente' vente.id %}" class="btn btn-sm btn-warning">✏️ </a>
-                    <a href="{% url 'supprimer_vente' vente.id %}" class="btn btn-sm btn-danger"
-                       onclick="return confirm('Supprimer cette vente ?');">🗑️</a>
+                    <ul class="mb-0 ps-3">
+                        {% for ligne in vente.lignes.all %}
+                        <li>{{ ligne.produit.variete }} ({{ ligne.quantite }} sacs)</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{ vente.montant_total|floatformat:2 }} F</td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="actionsMenu{{ vente.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="actionsMenu{{ vente.id }}">
+                            <li><a class="dropdown-item" href="{% url 'facture_vente' vente.id %}">🧾 Facturer</a></li>
+                            <li><a class="dropdown-item" href="{% url 'modifier_vente' vente.id %}">✏️ Modifier</a></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{% url 'supprimer_vente' vente.id %}" onclick="return confirm('Supprimer cette vente ?');">
+                                    🗑️ Supprimer
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6" class="text-center">Aucune vente enregistrée.</td>
+                <td colspan="7" class="text-center">Aucune vente enregistrée.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
-    
 </div>
 {% endblock %}

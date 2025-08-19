@@ -809,13 +809,16 @@ def modifier_vente(request, pk):
 
         if vente_form.is_valid() and formset.is_valid():
             vente = vente_form.save(commit=False)
+            lignes = formset.save(commit=False)
+
             montant_total = 0
 
-            # Supprimer les anciennes lignes pour repartir propre
-            vente.lignevente_set.all().delete()
+            # Supprimer les lignes marquées à supprimer par le formset
+            for ligne in formset.deleted_objects:
+                ligne.delete()
 
-            for form in formset:
-                ligne = form.save(commit=False)
+            # Sauvegarder les lignes et calculer le montant total
+            for ligne in lignes:
                 ligne.vente = vente
                 prix_unitaire = ligne.produit.prix_unitaire
                 total_ligne = prix_unitaire * ligne.quantite - ligne.remise
@@ -839,6 +842,7 @@ def modifier_vente(request, pk):
         'produits': Produit.objects.all(),
         'vente': vente,
     })
+
 
 #Supprimer une vente 
 

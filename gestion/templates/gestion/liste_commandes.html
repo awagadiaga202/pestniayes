@@ -1,81 +1,105 @@
 {% extends 'gestion/base.html' %}
 {% block title %}Liste des Commandes{% endblock %}
+
 {% block content %}
-<h2>Liste des Commandes</h2>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Liste des Commandes</h2>
 
-<a href="{% url 'dashboard_vendeur' %}" class="btn btn-success">
-            <i class="bi bi-file-earmark-arrow-down"></i> Accueil</a>
-<a href="{% url 'ajouter_commande' %}" class="btn btn-success ">
-    <i class="bi bi-file-earmark-arrow-down"></i> Ajouter une nouvelle commande
-</a>
- <a href="{% url 'bon_commande' %}" class="btn btn-success ">
-        <i class="bi bi-file-earmark-arrow-down"></i> Ajouter un Bon✔
-</a>
-    <br></br>
-<a href="{% url 'commandes_prioritaires_pdf' %}" class="btn btn-outline-primary ms-2">
-   <i class="bi bi-file-earmark-pdf-fill"></i> Exporter les Prioritaires
-</a>
-<a href="{% url 'exporter_commandes_variete' 'Synergie' %}" class="btn btn-outline-primary ms-2">
-      <i class="bi bi-file-earmark-pdf-fill"> </i>Exporter commandes Synergie
-</a>
-<a href="{% url 'exporter_commandes_variete' 'Spunta' %}" class="btn btn-outline-primary ms-2">
-     <i class="bi bi-file-earmark-pdf-fill"></i>Exporter commandes Spunta 
-</a>
-<a href="{% url 'exporter_commandes_pdf' %}" class="btn btn-outline-primary ms-2">
-        <i class="bi bi-file-earmark-pdf-fill"></i> Exporter par client
-    </a>
+    <!-- Boutons Accueil / Ajouter commande / Ajouter bon -->
+    <div class="mb-3 text-end">
+        <div class="btn-group" role="group" aria-label="Navigation commandes">
+            <a href="{% url 'dashboard_vendeur' %}" class="btn btn-success">
+                <i class="bi bi-house"></i> Accueil
+            </a>
+            <a href="{% url 'ajouter_commande' %}" class="btn btn-success">
+                <i class="bi bi-plus"></i> Ajouter une nouvelle commande
+            </a>
+            <a href="{% url 'bon_commande' %}" class="btn btn-success">
+                <i class="bi bi-file-earmark-check"></i> Ajouter un Bon✔
+            </a>
+        </div>
+    </div>
 
-<a href="{% url 'exportons_commandes_pdf' %}" class="btn btn-outline-primary ms-2">
-    <i class="bi bi-file-earmark-pdf-fill"></i> Exporter la liste
-</a>
-<br></br>
+    <!-- Dropdown export par variété -->
+    <div class="dropdown d-inline-block me-2 mb-3">
+        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Exporter par variété
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'exporter_commandes_variete' 'Synergie' %}">Synergie</a></li>
+            <li><a class="dropdown-item" href="{% url 'exporter_commandes_variete' 'Spunta' %}">Spunta</a></li>
+        </ul>
+    </div>
 
+    <!-- Dropdown export général -->
+    <div class="dropdown d-inline-block me-2 mb-3">
+        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Autres exports
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'commandes_prioritaires_pdf' %}">Prioritaires</a></li>
+            <li><a class="dropdown-item" href="{% url 'exporter_commandes_pdf' %}">Par client</a></li>
+            <li><a class="dropdown-item" href="{% url 'exportons_commandes_pdf' %}">Liste complète</a></li>
+        </ul>
+    </div>
 
-
-
-
-<table class="table table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>#</th>
-            <th>Client</th>
-            <th>Produits</th>
-             <th>Montant total</th>
-
-            <th>Avance</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for commande in commandes %}
-        <tr>
-            <td>{{ commande.id }}</td>
-            <td>{{ commande.client.nom }}  {{ commande.client.prenom }}</td>
-            <td>
-                <ul>
-                    {% for ligne in commande.lignes.all %}
-                    <li>{{ ligne.quantite }} {{ ligne.unite }} de {{ ligne.produit.variete }}</li>
-                    {% endfor %}
-                </ul>
-            </td>
-            <td>{{ commande.total }} F CFA</td>
-            <td>{{ commande.avance }} F CFA</td>
-
-                    <td>
-        <a href="{% url 'facture_commande' commande.id %}" class="btn btn-sm btn-outline-dark">
-    🧾 Facture PDF
-</a>
-        <a href="{% url 'modifier_commande' commande.id %}" class="btn btn-warning btn-sm">✏️</a>
-          <a href="{% url 'supprimer_commande' commande.id %}"  class="btn btn-sm btn-danger"
-                       onclick="return confirm('Supprimer cette commande ?');">🗑️</a>
-
-        </td>
-
-                               
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-
+    <!-- Tableau commandes -->
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Client</th>
+                <th>Produits</th>
+                <th>Montant total</th>
+                <th>Avance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commande in commandes %}
+            <tr>
+                <td>{{ commande.id }}</td>
+                <td>{{ commande.client.nom }} {{ commande.client.prenom }}</td>
+                <td>
+                    <ul class="mb-0 ps-3">
+                        {% for ligne in commande.lignes.all %}
+                        <li>{{ ligne.quantite }} {{ ligne.unite }} de {{ ligne.produit.variete }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{ commande.total }} F CFA</td>
+                <td>{{ commande.avance }} F CFA</td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="actionsMenu{{ commande.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="actionsMenu{{ commande.id }}">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'facture_commande' commande.id %}">
+                                    🧾 Facture PDF
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'modifier_commande' commande.id %}">
+                                    ✏️ Modifier
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{% url 'supprimer_commande' commande.id %}" onclick="return confirm('Supprimer cette commande ?');">
+                                    🗑️ Supprimer
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">Aucune commande enregistrée.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

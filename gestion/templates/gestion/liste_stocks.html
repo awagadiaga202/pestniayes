@@ -21,10 +21,8 @@
             <td> {{ stock.produit.variete }} </td>
             <td>{{ stock.depot.nom }}</td>
             <td>{{ stock.quantite }}</td>
-             <td>{{ reception.quantite }}</td>
-
             <td>
-                <a href="{% url 'modifier_stock' stock.pk %}" class="btn btn-primary btn-sm">✏️</a>
+                <a href="{% url 'ajouter_ou_modifier_stock' stock.pk %}" class="btn btn-primary btn-sm">✏️</a>
                 <a href="{% url 'supprimer_stock' stock.pk %}" class="btn btn-danger btn-sm">🗑️</a>
             </td>
         </tr>

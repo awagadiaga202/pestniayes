@@ -1,0 +1,13 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Ajouter ou Modifier un Stock{% endblock %}
+
+{% block content %}
+<h2>Ajouter / Modifier Stock</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+</form>
+{% endblock %}

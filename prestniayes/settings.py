@@ -10,8 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
-
 from pathlib import Path
+from decouple import config
+
+import dj_database_url
+import os
+
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,9 +29,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-85#@(ywfc--%tshnk4q1@ol7mb_0*5m=394$e1#bp2xz6*f0g-'
+SECRET_KEY = 'django-insecure-85#@(ywfc--%tshnk4q1@ol7mb_0*5m=394$e1#bp2xz6*f0g-'
 
 DEBUG = False
+ALLOWED_HOSTS = ["*"]
+
+
 
 # Application definition
  
@@ -78,15 +86,12 @@ WSGI_APPLICATION = 'prestniayes.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-          'NAME': 'prestniayes_db',
-         'USER': 'root',
-        'PASSWORD': 'root',  
-        'HOST': '127.0.0.1',
-        'PORT': '3307', 
-    }
+    'default': dj_database_url.config(
+        default=config("DATABASE_URL", default="postgresql://postgres:root@localhost:5432/prestniayes_db")
+    )
 }
+
+
  
 
 # Password validation

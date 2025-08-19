@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser,Group,Permission
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 # Classe Utilisateur
 class Utilisateur(AbstractUser):
     ROLES = [
@@ -170,15 +171,6 @@ class LigneVente(models.Model):
     depot = models.ForeignKey(Depot, on_delete=models.CASCADE)
     quantite = models.PositiveIntegerField()
     remise = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        stock = Stock.objects.get(produit=self.produit, depot=self.depot)
-        if stock.quantite < self.quantite:
-            raise ValueError("Stock insuffisant dans le dépôt.")
-        stock.quantite -= self.quantite
-        stock.save()
-
     @property
     def montant_total(self):
             remise = self.remise or 0

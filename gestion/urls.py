@@ -62,10 +62,6 @@ urlpatterns = [
         path("bon-commande/", views.bon_commande_view, name="bon_commande"),
         path("bons_commande/", views.liste_bons_commande, name="liste_bons_commande"),
 
-        
-
-
-
 #Compte bancaire 
         path('comptes/', views.liste_comptes, name='liste_comptes'),
         path('comptes/ajouter/', views.ajouter_compte, name='ajouter_compte'),
@@ -102,7 +98,7 @@ urlpatterns = [
 #Stock
        path('stocks/', views.liste_stocks, name='liste_stocks'),
         path('stocks/ajouter/', views.ajouter_stock, name='ajouter_stock'),
-        path('stocks/modifier/<int:pk>/', views.modifier_stock, name='modifier_stock'),
+        path('stocks/modifier/<int:pk>/', views.modifier_stock, name='ajouter_ou_modifier_stock'),
         path('stocks/supprimer/<int:pk>/', views.supprimer_stock, name='supprimer_stock'),
 
 
