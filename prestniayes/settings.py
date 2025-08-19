@@ -87,10 +87,11 @@ WSGI_APPLICATION = 'prestniayes.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=config("DATABASE_URL", default="postgresql://postgres:root@localhost:5432/prestniayes_db")
+        default="postgresql://postgres:root@localhost:5432/prestniayes_db",
+        conn_max_age=600,
+        ssl_require=True
     )
 }
-
 
  
 
