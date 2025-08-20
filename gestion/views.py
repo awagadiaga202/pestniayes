@@ -1246,7 +1246,7 @@ def liste_bons_commande(request):
 
 ####################################################################################################
 def accueil(request):
-    return render(request, 'gestion/login.html')
+    return render(request, 'gestion/home.html')
 
 def ajouter_compte(request):
     if request.method == 'POST':
