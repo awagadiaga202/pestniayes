@@ -57,10 +57,15 @@ def ajouter_client(request):
         form = ClientForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('liste_clients')  # on fera la vue liste ensuite
+            return redirect('liste_clients')  # après enregistrement
     else:
         form = ClientForm()
-    return render(request, 'gestion/Client_form.html', {'form': form, 'titre': "Ajouter un client"})
+
+    return render(request, 'gestion/ajouter_client.html', {
+        'form': form,
+        'titre': "Ajouter un client"
+    })
+
 def liste_clients(request):
     query = request.GET.get('q')
     if query:
