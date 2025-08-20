@@ -117,8 +117,7 @@
         <tr>
             <th>Produit</th>
             <th>Prix Unitaire (FCFA)</th>
-            <th>Quantité( en Sacs)</th>
-            <th>Remise (%)</th>
+            <th>Quantité( en Tonne)</th>
             <th>Montant</th>
         </tr>
     </thead>
@@ -127,8 +126,7 @@
         <tr>
             <td>{{ ligne.produit.variete }}</td>
             <td>{{ ligne.produit.prix_unitaire|floatformat:0 }}</td>
-            <td>{{ ligne.quantite }} sac</td>
-            <td>{{ ligne.remise|default:"0" }}</td>
+            <td>{{ ligne.quantite }} </td>
             <td>{{ ligne.montant_total }}</td>
 
         </tr>
