@@ -21,6 +21,7 @@ click-repl==0.3.0
 colorama==0.4.6
 cryptography==45.0.5
 cssselect2==0.8.0
+dj-database-url==3.0.1
 Django==5.1.5
 django-extensions==3.2.3
 django-widget-tweaks==1.5.0
@@ -70,12 +71,7 @@ vine==5.1.0
 wcwidth==0.2.13
 weasyprint==66.0
 webencodings==0.5.1
+whitenoise==6.9.0
 xhtml2pdf==0.2.17
 yarl==1.18.3
 zopfli==0.2.3.post1
-
-gunicorn
-psycopg2-binary
-dj-database-url
-
-
