@@ -1054,10 +1054,21 @@ def generer_facture_pdf(request, vente_id):
     if logo_path and os.path.exists(logo_path):
         with open(logo_path, "rb") as image_file:
             logo_base64 = base64.b64encode(image_file.read()).decode()
+    
+    # Chemin absolu du cachet
+    cachet_path = finders.find('images/sig.jpg')
+    cachet_base64 = ""
+
+    if cachet_path and os.path.exists(cachet_path):
+            with open(cachet_path, "rb") as image_file:
+                 cachet_base64 = base64.b64encode(image_file.read()).decode()
+
 
     context = {
         'vente': vente,
         'logo_base64': logo_base64,
+        'cachet_base64': cachet_base64, 
+
     }
 
     template = get_template(template_path)
@@ -1104,7 +1115,7 @@ def facture_proforma_view(request):
 
         # Chemin absolu logo (à adapter selon ta config)
 
-        logo_path = finders.find("images/awa.jpg")
+        logo_path = finders.find("images/sig.jpg")
 
         
         # Charger logo en base64

@@ -117,7 +117,8 @@
         <tr>
             <th>Produit</th>
             <th>Prix Unitaire (FCFA)</th>
-            <th>Quantité( en Tonne)</th>
+            <th>Quantité( en Sac)</th>
+            <th>Remise (%)</th>
             <th>Montant</th>
         </tr>
     </thead>
@@ -126,7 +127,8 @@
         <tr>
             <td>{{ ligne.produit.variete }}</td>
             <td>{{ ligne.produit.prix_unitaire|floatformat:0 }}</td>
-            <td>{{ ligne.quantite }} </td>
+            <td>{{ ligne.quantite }} sac</td>
+            <td>{{ ligne.remise|default:"0" }}</td>
             <td>{{ ligne.montant_total }}</td>
 
         </tr>
@@ -143,8 +145,14 @@
 </table>
 <div class="signature">
     <strong>Signature / Cachet</strong>
-    <br/>
-    _______________________</br>
+    
+    <!-- Ligne pour le cachet -->
+    {% if cachet_base64 %}
+        <img src="data:image/png;base64,{{ cachet_base64 }}" alt="Cachet" style="width:120px; display:block; margin-top:10px;">
+    {% endif %}
+
+    <!-- Ligne pour la signature -->
+
     <p><em>Fait à Notto Gouye Diama, le : {{ vente.date_vente|date:"d/m/Y" }}</em></p>
 </div>
 

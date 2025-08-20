@@ -32,7 +32,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-85#@(ywfc--%tshnk4q1@ol7mb_0*5m=394$e1#bp2xz6*f0g-'
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ["pestniayes.onrender.com", "localhost"]
 
 
@@ -147,7 +147,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'gestion.Utilisateur'  # Remplace "gestion" par le nom de ton app si différent
+AUTH_USER_MODEL = 'gestion.Utilisateur'  
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = 'redirection_login'
 LOGOUT_REDIRECT_URL = 'login'
