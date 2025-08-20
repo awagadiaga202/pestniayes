@@ -1246,7 +1246,7 @@ def liste_bons_commande(request):
 
 ####################################################################################################
 def accueil(request):
-    return render(request, 'gestion/home.html')
+    return render(request, 'gestion/login.html')
 
 def ajouter_compte(request):
     if request.method == 'POST':
@@ -1426,6 +1426,7 @@ def dashboard_vendeur(request):
         'ventes': ventes,
         'produits': produits,
     })
+
 def logout_view(request):
     logout(request)
     return redirect('login')
