@@ -10,12 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
-
 from pathlib import Path
+from decouple import config
+
+import dj_database_url
+import os
+
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -26,7 +32,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-85#@(ywfc--%tshnk4q1@ol7mb_0*5m=394$e1#bp2xz6*f0g-'
 
-DEBUG = True
+DEBUG = False
+ALLOWED_HOSTS = ["pestniayes.onrender.com", "localhost"]
+
+
 
 # Application definition
  
@@ -50,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     'whitenoise.middleware.WhiteNoiseMiddleware', 
 ]
 
 ROOT_URLCONF = 'prestniayes.urls'
@@ -78,15 +88,13 @@ WSGI_APPLICATION = 'prestniayes.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-          'NAME': 'prestniayes_db',
-         'USER': 'root',
-        'PASSWORD': 'root',  
-        'HOST': '127.0.0.1',
-        'PORT': '3307', 
-    }
+    'default': dj_database_url.config(
+        default="postgresql://postgres:root@localhost:5432/prestniayes_db",
+        conn_max_age=600,
+        ssl_require=False
+    )
 }
+
  
 
 # Password validation
@@ -123,15 +131,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # seulement si tu as un dossier /static en dev
 
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Où collectstatic va copier les fichiers
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Ton dossier local static
+]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')        
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    # uploads utilisateurs
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'gestion.Utilisateur'  # Remplace "gestion" par le nom de ton app si différent
+AUTH_USER_MODEL = 'gestion.Utilisateur'  
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = 'redirection_login'
 LOGOUT_REDIRECT_URL = 'login'
