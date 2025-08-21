@@ -62,25 +62,20 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="formset">
+                <tbody id="formset-body">
                     {% for form in formset %}
-                    <tr class="ligne-formset">
-                        <td>{{ form.produit|add_class:"form-control" }}</td>
-                        <td>{{ form.prix_unitaire|add_class:"form-control prix-unitaire" }}</td>
-                        <td>{{ form.quantite|add_class:"form-control quantite" }}</td>
-                        <td>{{ form.remise|add_class:"form-control remise" }}</td>
-                        <td>
-                            <span class="montant-ligne">0.00</span> F
-                            <!-- Champ caché qui va contenir le montant réel -->
-                            {{ form.montant|add_class:"form-control d-none montant-input" }}
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-sm supprimer-ligne">X</button>
-                        </td>
-                    </tr>
+                        <tr class="ligne-form">
+                            <td>{{ form.produit|add_class:"form-select produit-select" }}</td>
+                            <td>{{ form.depot|add_class:"form-select" }}</td>
+
+                            <td>{{ form.quantite|add_class:"form-control quantite-input" }}</td>
+
+                            <td>{{ form.remise|add_class:"form-control remise-input" }}</td>
+                            <td><span class="montant-ligne">0.00</span> F</td>
+                            <td><button type="button" class="btn btn-danger btn-sm remove-row">🗑️</button></td>
+                        </tr>
                     {% endfor %}
                 </tbody>
-
             </table>
             <button type="button" class="btn btn-outline-primary" id="add-ligne">➕ Ajouter un produit</button>
         </div>
@@ -109,48 +104,74 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const formsetTable = document.getElementById("formset");
+    const produitsPrix = {
+        {% for produit in produits %}
+            '{{ produit.id }}': {{ produit.prix_unitaire|floatformat:2 }},
+        {% endfor %}
+    };
 
     function recalculerMontants() {
-        let totalGeneral = 0;
+        let totalGlobal = 0;
+        document.querySelectorAll('.ligne-form').forEach(function (ligne) {
+            const produitSelect = ligne.querySelector('.produit-select');
+            const quantiteInput = ligne.querySelector('.quantite-input');
+            const remiseInput = ligne.querySelector('.remise-input');
+            const montantSpan = ligne.querySelector('.montant-ligne');
 
-        formsetTable.querySelectorAll(".ligne-formset").forEach(ligne => {
-            const prix = parseFloat(ligne.querySelector(".prix-unitaire").value) || 0;
-            const quantite = parseInt(ligne.querySelector(".quantite").value) || 0;
-            const remise = parseFloat(ligne.querySelector(".remise").value) || 0;
+            const prix = produitsPrix[produitSelect.value] || 0;
+            const quantite = parseFloat(quantiteInput.value) || 0;
+            const remise = parseFloat(remiseInput.value) || 0;
 
             let total = (prix * quantite) - remise;
             if (total < 0) total = 0;
 
-            // Affichage utilisateur
-            ligne.querySelector(".montant-ligne").textContent = total.toFixed(2);
-
-            // Mise à jour du champ caché (input montant)
-            const montantInput = ligne.querySelector(".montant-input");
-            if (montantInput) {
-                montantInput.value = total.toFixed(2);
-            }
-
-            totalGeneral += total;
+            montantSpan.textContent = total.toFixed(2);
+            totalGlobal += total;
         });
 
-        // Afficher le total général
-        document.getElementById("total-general").textContent = totalGeneral.toFixed(2);
+        document.getElementById('montant-total-global').textContent = totalGlobal.toFixed(2);
     }
 
-    // Événements pour recalculer à chaque saisie
-    formsetTable.addEventListener("input", function (event) {
-        if (event.target.classList.contains("prix-unitaire") ||
-            event.target.classList.contains("quantite") ||
-            event.target.classList.contains("remise")) {
-            recalculerMontants();
+    document.addEventListener('input', recalculerMontants);
+    document.addEventListener('change', recalculerMontants);
+
+    document.getElementById('add-ligne').addEventListener('click', function () {
+        const formCountInput = document.querySelector('#id_form-TOTAL_FORMS');
+        const formCount = parseInt(formCountInput.value);
+        const tableBody = document.getElementById('formset-body');
+
+        const lastRow = tableBody.querySelector('.ligne-form:last-child');
+        const newRow = lastRow.cloneNode(true);
+
+        newRow.querySelectorAll('input, select').forEach(function (input) {
+            const name = input.getAttribute('name').replace(`form-${formCount - 1}`, `form-${formCount}`);
+            const id = input.getAttribute('id').replace(`form-${formCount - 1}`, `form-${formCount}`);
+            input.setAttribute('name', name);
+            input.setAttribute('id', id);
+            if (input.tagName === 'SELECT') {
+                input.selectedIndex = 0;
+            } else {
+                input.value = '';
+            }
+        });
+
+        newRow.querySelector('.montant-ligne').textContent = '0.00';
+        tableBody.appendChild(newRow);
+        formCountInput.value = formCount + 1;
+    });
+
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-row')) {
+            const lignes = document.querySelectorAll('.ligne-form');
+            if (lignes.length > 1) {
+                e.target.closest('tr').remove();
+                recalculerMontants();
+                document.querySelector('#id_form-TOTAL_FORMS').value = lignes.length - 1;
+            }
         }
     });
 
-    // Recalcul initial
-    recalculerMontants();
-});
+    window.onload = recalculerMontants;
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
