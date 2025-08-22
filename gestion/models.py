@@ -143,7 +143,9 @@ class LigneCommande(models.Model):
 class Vente(models.Model):
     client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True)
     date_vente = models.DateTimeField(default=timezone.now)
-    montant_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    montant_total = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    
+
 
     commentaire = models.TextField(blank=True, null=True)
     

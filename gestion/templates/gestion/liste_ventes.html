@@ -72,7 +72,8 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ vente.date_vente|date:"d/m/Y H:i" }}</td>
-                <td>{{ vente.client.prenom }} {{ vente.client.nom }}</td>
+                <td>{{ vente.client.prenom }}{{ vente.client.nom }}</td> 
+
                 <td>{{ vente.vendeur }}</td>
                 <td>
                     <ul class="mb-0 ps-3">

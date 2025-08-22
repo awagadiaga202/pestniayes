@@ -732,19 +732,23 @@ def exporter_commandes_par_variete(request, variete_nom):
 
 #Ventre
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Vente, LigneVente, Produit, Stock
+from .forms import VenteForm, LigneVenteFormSet
+
 def ajouter_vente(request):
+    produits = Produit.objects.all()  # ✅ toujours disponible pour le template
+
     if request.method == 'POST':
         vente_form = VenteForm(request.POST)
-        vente_temp = Vente()
-        formset = LigneVenteFormSet(request.POST, instance=vente_temp)
-
         if vente_form.is_valid():
             vente = vente_form.save(commit=False)
             formset = LigneVenteFormSet(request.POST, instance=vente)
 
             if formset.is_valid():
                 montant_total = 0
-                vente.save()  # On sauvegarde la vente avant les lignes
+                vente.save()  # On doit sauvegarder la vente avant les lignes
 
                 for form in formset:
                     ligne = form.save(commit=False)
@@ -759,38 +763,49 @@ def ajouter_vente(request):
                     try:
                         stock = Stock.objects.get(produit=ligne.produit, depot=ligne.depot)
                         if stock.quantite < ligne.quantite:
-                            messages.error(request,
-                                f"Stock insuffisant pour {ligne.produit.nom} dans le dépôt {ligne.depot.nom}.")
-                            # On annule la transaction en affichant la page avec erreurs
-                            return render(request, 'gestion/liste_vente.html', {
+                            messages.error(
+                                request,
+                                f"Stock insuffisant pour {ligne.produit.nom} dans le dépôt {ligne.depot.nom}."
+                            )
+                            # Retourner le formulaire avec erreurs
+                            return render(request, 'gestion/ajouter_vente.html', {
                                 'vente_form': vente_form,
                                 'formset': formset,
-                                'produits': Produit.objects.all(),
+                                'produits': produits,
                             })
                         stock.quantite -= ligne.quantite
                         stock.save()
                     except Stock.DoesNotExist:
-                        messages.error(request,
-                            f"Le produit {ligne.produit.nom} n'existe pas dans le dépôt {ligne.depot.nom}.")
+                        messages.error(
+                            request,
+                            f"Le produit {ligne.produit.nom} n'existe pas dans le dépôt {ligne.depot.nom}."
+                        )
                         return render(request, 'gestion/ajouter_vente.html', {
                             'vente_form': vente_form,
                             'formset': formset,
-                            'produits': Produit.objects.all(),
+                            'produits': produits,
                         })
 
                     ligne.save()
 
-                # Mise à jour montant total
+                # Mise à jour du montant total
                 vente.montant_total = montant_total
                 vente.save()
 
                 messages.success(request, "Vente enregistrée avec succès.")
                 return redirect('liste_ventes')
-
             else:
                 messages.error(request, "Veuillez corriger les erreurs dans les lignes de vente.")
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire de vente.")
+
+        # En cas d'erreurs, renvoyer le formulaire avec les produits pour le JS
+        formset = LigneVenteFormSet(request.POST, instance=vente)
+        return render(request, 'gestion/ajouter_vente.html', {
+            'vente_form': vente_form,
+            'formset': formset,
+            'produits': produits,
+        })
 
     else:
         vente_form = VenteForm()
@@ -799,7 +814,7 @@ def ajouter_vente(request):
     return render(request, 'gestion/ajouter_vente.html', {
         'vente_form': vente_form,
         'formset': formset,
-        'produits': Produit.objects.all(),
+        'produits': produits,
     })
 
 
@@ -1048,7 +1063,7 @@ def generer_facture_pdf(request, vente_id):
     template_path = 'gestion/facture_pdf.html'
 
     # ✅ Trouver le chemin absolu du logo
-    logo_path = finders.find('images/awa.jpg')
+    logo_path = finders.find('images/logo_prestniayes.png')
     logo_base64 = ""
 
     if logo_path and os.path.exists(logo_path):
@@ -1056,7 +1071,7 @@ def generer_facture_pdf(request, vente_id):
             logo_base64 = base64.b64encode(image_file.read()).decode()
     
     # Chemin absolu du cachet
-    cachet_path = finders.find('images/sig.jpg')
+    cachet_path = finders.find('images/lo.png')
     cachet_base64 = ""
 
     if cachet_path and os.path.exists(cachet_path):
@@ -1115,7 +1130,7 @@ def facture_proforma_view(request):
 
         # Chemin absolu logo (à adapter selon ta config)
 
-        logo_path = finders.find("images/sig.jpg")
+        logo_path = finders.find("images/awa.jpg")
 
         
         # Charger logo en base64

@@ -86,7 +86,7 @@
  <td style="text-align: center;">
     
     {% if logo_base64 %}
-    <img src="data:image/jpg;base64,{{ logo_base64 }}" alt="Logo Prest-Niayes" style="width: 120px; height: auto;" /></br>
+    <img src="data:image/png;base64,{{ logo_base64 }}" alt="Logo Prest-Niayes" style="width: 120px; height: auto;" /></br>
     {% endif %}
         République du Sénégal<br/>
         Entreprise Prest-Niayes<br/>
@@ -127,7 +127,7 @@
         <tr>
             <td>{{ ligne.produit.variete }}</td>
             <td>{{ ligne.produit.prix_unitaire|floatformat:0 }}</td>
-            <td>{{ ligne.quantite }} sac</td>
+            <td>{{ ligne.quantite }}</td>
             <td>{{ ligne.remise|default:"0" }}</td>
             <td>{{ ligne.montant_total }}</td>
 

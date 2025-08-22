@@ -4,11 +4,16 @@
 {% block title %}Nouvelle Vente{% endblock %}
 
 {% block content %}
+<!-- CSS Select2 -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- jQuery et Select2 -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <div class="container mt-4">
     <h3 class="text-center mb-4">Nouvelle Vente</h3>
+
     <form method="post">
         {% csrf_token %}
 
@@ -28,12 +33,10 @@
                     <label>Date de vente</label>
                     {{ vente_form.date_vente|add_class:"form-select" }}
                 </div>
-
                 <div class="col-md-6 mb-3">
                     <label>Type de vente</label>
                     {{ vente_form.type_vente|add_class:"form-control" }}
                 </div>
-
                 <div class="col-md-6 mb-3">
                     <label>Mode de paiement</label>
                     {{ vente_form.mode_paiement|add_class:"form-select" }}
@@ -53,10 +56,8 @@
                 <thead>
                     <tr>
                         <th>Produit</th>
-                         <th>Dépôt</th>
-
+                        <th>Dépôt</th>
                         <th>Quantité</th>
-
                         <th>Remise</th>
                         <th>Montant ligne (F)</th>
                         <th>Actions</th>
@@ -67,9 +68,7 @@
                         <tr class="ligne-form">
                             <td>{{ form.produit|add_class:"form-select produit-select" }}</td>
                             <td>{{ form.depot|add_class:"form-select" }}</td>
-
                             <td>{{ form.quantite|add_class:"form-control quantite-input" }}</td>
-
                             <td>{{ form.remise|add_class:"form-control remise-input" }}</td>
                             <td><span class="montant-ligne">0.00</span> F</td>
                             <td><button type="button" class="btn btn-danger btn-sm remove-row">🗑️</button></td>
@@ -86,24 +85,25 @@
         </div>
 
         <button type="submit" class="btn btn-success w-100">💾 Enregistrer la vente</button>
-        {% if vente_form.errors %}
-    <div class="alert alert-danger">
-        {{ vente_form.errors }}
-    </div>
-{% endif %}
 
-{% for form in formset %}
-    {% if form.errors %}
-        <div class="alert alert-danger">
-            {{ form.errors }}
-        </div>
-    {% endif %}
-{% endfor %}
+        {% if vente_form.errors %}
+        <div class="alert alert-danger">{{ vente_form.errors }}</div>
+        {% endif %}
+
+        {% for form in formset %}
+            {% if form.errors %}
+                <div class="alert alert-danger">{{ form.errors }}</div>
+            {% endif %}
+        {% endfor %}
 
     </form>
 </div>
 
 <script>
+$(document).ready(function() {
+    // Initialiser Select2
+    $('#id_client').select2({ width: '100%' });
+
     const produitsPrix = {
         {% for produit in produits %}
             '{{ produit.id }}': {{ produit.prix_unitaire|floatformat:2 }},
@@ -112,83 +112,48 @@
 
     function recalculerMontants() {
         let totalGlobal = 0;
-        document.querySelectorAll('.ligne-form').forEach(function (ligne) {
-            const produitSelect = ligne.querySelector('.produit-select');
-            const quantiteInput = ligne.querySelector('.quantite-input');
-            const remiseInput = ligne.querySelector('.remise-input');
-            const montantSpan = ligne.querySelector('.montant-ligne');
-
-            const prix = produitsPrix[produitSelect.value] || 0;
-            const quantite = parseFloat(quantiteInput.value) || 0;
-            const remise = parseFloat(remiseInput.value) || 0;
-
+        $('.ligne-form').each(function() {
+            const produitId = $(this).find('.produit-select').val();
+            const quantite = parseFloat($(this).find('.quantite-input').val()) || 0;
+            const remise = parseFloat($(this).find('.remise-input').val()) || 0;
+            const prix = produitsPrix[produitId] || 0;
             let total = (prix * quantite) - remise;
             if (total < 0) total = 0;
-
-            montantSpan.textContent = total.toFixed(2);
+            $(this).find('.montant-ligne').text(total.toFixed(2));
             totalGlobal += total;
         });
-
-        document.getElementById('montant-total-global').textContent = totalGlobal.toFixed(2);
+        $('#montant-total-global').text(totalGlobal.toFixed(2));
     }
 
-    document.addEventListener('input', recalculerMontants);
-    document.addEventListener('change', recalculerMontants);
+    $(document).on('input change', '.ligne-form input, .ligne-form select', recalculerMontants);
 
-    document.getElementById('add-ligne').addEventListener('click', function () {
-        const formCountInput = document.querySelector('#id_form-TOTAL_FORMS');
-        const formCount = parseInt(formCountInput.value);
-        const tableBody = document.getElementById('formset-body');
+    $('#add-ligne').click(function() {
+        const formCountInput = $('#id_form-TOTAL_FORMS');
+        const formCount = parseInt(formCountInput.val());
+        const lastRow = $('#formset-body .ligne-form:last').clone();
 
-        const lastRow = tableBody.querySelector('.ligne-form:last-child');
-        const newRow = lastRow.cloneNode(true);
-
-        newRow.querySelectorAll('input, select').forEach(function (input) {
-            const name = input.getAttribute('name').replace(`form-${formCount - 1}`, `form-${formCount}`);
-            const id = input.getAttribute('id').replace(`form-${formCount - 1}`, `form-${formCount}`);
-            input.setAttribute('name', name);
-            input.setAttribute('id', id);
-            if (input.tagName === 'SELECT') {
-                input.selectedIndex = 0;
-            } else {
-                input.value = '';
-            }
+        lastRow.find('input, select').each(function() {
+            const name = $(this).attr('name').replace(/\d+/, formCount);
+            const id = $(this).attr('id').replace(/\d+/, formCount);
+            $(this).attr({name: name, id: id}).val('');
+            if ($(this).is('select')) $(this).prop('selectedIndex', 0);
         });
 
-        newRow.querySelector('.montant-ligne').textContent = '0.00';
-        tableBody.appendChild(newRow);
-        formCountInput.value = formCount + 1;
+        lastRow.find('.montant-ligne').text('0.00');
+        $('#formset-body').append(lastRow);
+        formCountInput.val(formCount + 1);
+        recalculerMontants();
     });
 
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-row')) {
-            const lignes = document.querySelectorAll('.ligne-form');
-            if (lignes.length > 1) {
-                e.target.closest('tr').remove();
-                recalculerMontants();
-                document.querySelector('#id_form-TOTAL_FORMS').value = lignes.length - 1;
-            }
+    $(document).on('click', '.remove-row', function() {
+        if ($('.ligne-form').length > 1) {
+            $(this).closest('tr').remove();
+            $('#id_form-TOTAL_FORMS').val($('.ligne-form').length);
+            recalculerMontants();
         }
     });
 
-    window.onload = recalculerMontants;
+    recalculerMontants(); // Initialisation
+});
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#id_client').select2({ width: '100%' });
-    });
-</script>
-{% if form_commande.errors %}
-    <div class="alert alert-danger">
-        {{ form_commande.errors }}
-    </div>
-{% endif %}
-
-{% if formset_lignes.errors %}
-    <div class="alert alert-danger">
-        {{ formset_lignes.errors }}
-    </div>
-{% endif %}
 {% endblock %}
