@@ -51,6 +51,7 @@ from .forms import LoginForm
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.forms import inlineformset_factory
+from django.utils import timezone
 
 def ajouter_client(request):
     if request.method == 'POST':
@@ -332,6 +333,75 @@ def supprimer_commande(request, commande_id):
     return render(request, 'gestion/commande_confirmer_suppression.html', {
         'commande': commande
     })
+
+
+def valider_commande(request, pk):
+    commande = get_object_or_404(Commande, pk=pk)
+
+    if commande.est_validee:
+        messages.info(request, "Cette commande a déjà été validée.")
+        return redirect('liste_commandes')
+
+    # Créer la vente correspondante
+    vente = Vente.objects.create(
+        client=commande.client,
+        vendeur=request.user,  # Utilisateur connecté
+        date_vente=timezone.now(),
+        type_vente='Commande validée',
+        mode_paiement='Non défini',
+        commentaire=f"Commande #{commande.id} validée",
+        montant_total=0  # On va le calculer
+    )
+
+    montant_total = 0
+    for ligne_commande in commande.lignes.all():
+        total_ligne = ligne_commande.quantite * ligne_commande.prix_unitaire
+        montant_total += total_ligne
+
+        # Vérification stock
+        try:
+            stock = Stock.objects.get(produit=ligne_commande.produit, depot__id=1)  # à adapter si tu gères les dépôts
+            if stock.quantite < ligne_commande.quantite:
+                messages.error(request,
+                    f"Stock insuffisant pour {ligne_commande.produit.nom}.")
+                vente.delete()  # Annuler la vente si stock insuffisant
+                return redirect('liste_commandes')
+            stock.quantite -= ligne_commande.quantite
+            stock.save()
+        except Stock.DoesNotExist:
+            messages.error(request,
+                f"Le produit {ligne_commande.produit.nom} n'existe pas en stock.")
+            vente.delete()
+            return redirect('liste_commandes')
+
+        LigneVente.objects.create(
+            vente=vente,
+            produit=ligne_commande.produit,
+            quantite=ligne_commande.quantite,
+            remise=0,  # Pas de remise individuelle
+            depot=stock.depot  # Associer le dépôt
+        )
+        LigneVente.objects.create(
+    vente=vente,
+    produit=ligne_commande.produit,
+    quantite=ligne_commande.quantite,
+    remise=0,
+    depot=stock.depot,
+    prix_unitaire=ligne_commande.prix_unitaire  # ✅ ajouter
+)
+
+    # Appliquer la remise globale de la commande
+    montant_total -= commande.remise
+    vente.montant_total = montant_total
+    vente.save()
+
+    # Marquer la commande comme validée
+    commande.est_validee = True
+    commande.save()
+
+    messages.success(request, f"Commande #{commande.id} validée et transformée en vente.")
+    return redirect('liste_commandes')
+
 
 ############################################################################################################
 def exporter_commandes_pdf(request):
@@ -732,10 +802,7 @@ def exporter_commandes_par_variete(request, variete_nom):
 
 #Ventre
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .models import Vente, LigneVente, Produit, Stock
-from .forms import VenteForm, LigneVenteFormSet
+
 
 def ajouter_vente(request):
     produits = Produit.objects.all()  # ✅ toujours disponible pour le template
@@ -1130,7 +1197,7 @@ def facture_proforma_view(request):
 
         # Chemin absolu logo (à adapter selon ta config)
 
-        logo_path = finders.find("images/awa.jpg")
+        logo_path = finders.find("images/logo_prestniayes.png")
 
         
         # Charger logo en base64
@@ -1139,7 +1206,7 @@ def facture_proforma_view(request):
             with open(logo_path, "rb") as image_file:
                 logo_base64 = base64.b64encode(image_file.read()).decode()
         # Chemin du cachet/signature
-        cachet_path = finders.find("images/cachet.jpeg")
+        cachet_path = finders.find("images/lo.png")
         cachet_signature_base64 = ""
         if cachet_path and os.path.exists(cachet_path):
             with open(cachet_path, "rb") as image_file:

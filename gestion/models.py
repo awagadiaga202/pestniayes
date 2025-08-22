@@ -111,6 +111,7 @@ class Commande(models.Model):
     date_commande = models.DateTimeField(auto_now_add=True)
     remise = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     avance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    est_validee = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Commande #{self.id} - {self.client.nom}"
@@ -135,6 +136,7 @@ class LigneCommande(models.Model):
     quantite = models.PositiveIntegerField()
     unite = models.CharField(max_length=20, choices=UNITE_CHOICES)
     prix_unitaire = models.DecimalField(max_digits=10, decimal_places=2)
+
 
     def __str__(self):
         return f"{self.quantite} {self.unite} de {self.produit.nom}"

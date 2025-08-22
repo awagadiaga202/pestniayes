@@ -90,6 +90,12 @@
                                     🗑️ Supprimer
                                 </a>
                             </li>
+                             {% if not commande.est_validee %}
+                                <a href="{% url 'valider_commande' commande.id %}" class="btn btn-success">✅ Valider</a>
+                            {% else %}
+                                <span class="text-success">Validée</span>
+                            {% endif %}
+
                         </ul>
                     </div>
                 </td>

@@ -34,6 +34,7 @@ urlpatterns = [
         path('commandes/prioritaires/pdf/', views.exporter_commandes_prioritaires_pdf, name='commandes_prioritaires_pdf'),
         path('commandes/<int:commande_id>/facture/', views.generer_facture_pdff, name='facture_commande'),
         path('commandes/variete/<str:variete_nom>/export/', views.exporter_commandes_par_variete, name='exporter_commandes_variete'),
+         path('commande/<int:pk>/valider/', views.valider_commande, name='valider_commande'),
 
 
 
