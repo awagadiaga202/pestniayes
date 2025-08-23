@@ -79,10 +79,9 @@ urlpatterns = [
         path('dashboard-vendeur/', views.dashboard_vendeur, name='dashboard_vendeur'),
         # path('dashboard-comptable/', views.dashboard_comptable, name='dashboard_comptable'),
 
-
+        path('redirection/', views.redirection_login, name='redirection_login'),
 
         path('logout/', views.logout_view, name='logout'),
-        # tes autres routes ici
         #Depot
         path('depots/', views.liste_depots, name='liste_depots'),
         path('depots/ajouter/', views.ajouter_depot, name='ajouter_depot'),

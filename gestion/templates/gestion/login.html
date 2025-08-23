@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Connexion</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         body {
             background-color: #f2f2f2;
@@ -14,49 +15,77 @@
         }
         .card {
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 15px;
         }
         .logo {
             width: 120px;
             margin-bottom: 20px;
         }
+        .password-toggle {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <div class="container login-container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="text-center">
+                    <img src="{% static 'images/logo_prestniayes.png' %}" alt="Logo" class="logo">
+                </div>
+                <div class="card shadow-sm">
+                    <h4 class="text-center mb-4">Connexion à votre espace</h4>
 
-<div class="container login-container">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="text-center">
-                <img src="{% static 'images/logo_prestniayes.png' %}" alt="Logo" class="logo">
-            </div>
-            <div class="card shadow-sm">
-                <h4 class="text-center mb-4">Connexion à votre espace</h4>
-                <form method="post">
-                    {% csrf_token %}
-                    {% if form.errors %}
-                        <div class="alert alert-danger">
-                            Identifiants incorrects. Veuillez réessayer.
-                        </div>
+                    <!-- Message d'erreur Django -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
                     {% endif %}
 
-                    <div class="form-group mb-3">
-                        <label for="id_username">Nom d'utilisateur</label>
-                        {{ form.username|add_class:"form-control" }}
-                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Champ username -->
+                        <div class="form-group mb-3">
+                            <label for="username">Nom d'utilisateur</label>
+                            <input type="text" name="username" id="username" class="form-control" required>
+                        </div>
 
-                    <div class="form-group mb-3">
-                        <label for="id_password">Mot de passe</label>
-                        {{ form.password|add_class:"form-control" }}
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
-                </form>
+                        <!-- Champ password avec icône œil -->
+                        <div class="form-group mb-3">
+                            <label for="password">Mot de passe</label>
+                            <div class="input-group">
+                                <input type="password" name="password" id="password" class="form-control" required>
+                                <span class="input-group-text password-toggle" onclick="togglePassword()">
+                                    <i class="bi bi-eye" id="toggleIcon"></i>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        function togglePassword() {
+            let passwordField = document.getElementById("password");
+            let toggleIcon = document.getElementById("toggleIcon");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.classList.remove("bi-eye");
+                toggleIcon.classList.add("bi-eye-slash");
+            } else {
+                passwordField.type = "password";
+                toggleIcon.classList.remove("bi-eye-slash");
+                toggleIcon.classList.add("bi-eye");
+            }
+        }
+    </script>
 </body>
 </html>

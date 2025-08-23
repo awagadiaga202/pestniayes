@@ -52,7 +52,7 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.forms import inlineformset_factory
 from django.utils import timezone
-
+@login_required
 def ajouter_client(request):
     if request.method == 'POST':
         form = ClientForm(request.POST)
@@ -66,7 +66,7 @@ def ajouter_client(request):
         'form': form,
         'titre': "Ajouter un client"
     })
-
+@login_required
 def liste_clients(request):
     query = request.GET.get('q')
     if query:
@@ -188,7 +188,7 @@ def export_clients_pdf(request):
     return response
 
 # Fournisseur 
-
+@login_required
 def ajouter_fournisseur(request):
     if request.method == 'POST':
         form = FournisseurForm(request.POST)
@@ -227,6 +227,7 @@ def supprimer_fournisseur(request, pk):
         'retour_url': reverse('liste_fournisseurs')
     })
 # Produit 
+@login_required
 def ajouter_produit(request):
     if request.method == 'POST':
         form = ProduitForm(request.POST)
@@ -260,6 +261,7 @@ def supprimer_produit(request, pk):
     })
 
 # Commande 
+@login_required
 def ajouter_commande(request):
     prefix = 'lignes'  # 👈 préfixe pour le formset
 
@@ -1338,8 +1340,21 @@ def liste_bons_commande(request):
     return render(request, "gestion/liste_bons_commande.html", {"bons": bons})
 
 ####################################################################################################
+@login_required(login_url='login')  # nom de l’URL login dans urls.py
+def redirection_login(request):
+    # Vérifier le rôle de l'utilisateur
+    if request.user.role == 'admin':  # ou selon le champ exact dans ton modèle
+        return redirect('gestion/home.html')        # URL de l'accueil admin
+    elif request.user.role == 'vendeur':
+        return redirect('gestion/dashboard_vendeur.html')  # URL du dashboard vendeur
+    else:
+        return redirect('login.html')       # sécurité au cas où
+
+
+
 def accueil(request):
     return render(request, 'gestion/home.html')
+
 
 def ajouter_compte(request):
     if request.method == 'POST':
