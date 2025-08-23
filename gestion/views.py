@@ -285,7 +285,7 @@ def ajouter_commande(request):
         'produits': Produit.objects.all()
     }
     return render(request, 'gestion/ajouter_commande.html', context)
-
+@login_required
 def liste_commandes(request):
     commandes = Commande.objects.prefetch_related('lignes__produit')
 
@@ -803,7 +803,7 @@ def exporter_commandes_par_variete(request, variete_nom):
 #Ventre
 
 
-
+@login_required
 def ajouter_vente(request):
     produits = Produit.objects.all()  # ✅ toujours disponible pour le template
 
@@ -1029,7 +1029,7 @@ def exporter_ventes_variete_pdf(request, variete):
     doc.build(elements)
     return response
 
-
+@login_required
 def liste_ventes(request):
     client_nom = request.GET.get('client')
     ventes = Vente.objects.all().select_related('client', 'vendeur').prefetch_related('lignes__produit')
@@ -1339,7 +1339,7 @@ def liste_bons_commande(request):
 
 ####################################################################################################
 def accueil(request):
-    return render(request, 'gestion/home.html')
+    return render(request, 'gestion/login.html')
 
 def ajouter_compte(request):
     if request.method == 'POST':
