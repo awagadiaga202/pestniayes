@@ -16,6 +16,9 @@
     <h2>Créer un Bon de Commande</h2>
     <form method="POST" onsubmit="return prepareData()">
         {% csrf_token %}
+        <label for="numero_bc">Numéro du Bon de Commande :</label>
+<input type="text" name="numero_bc" id="numero_bc" class="form-control" value="{{ numero_bc }}" required />
+
         <label for="fournisseur_entreprise">Entreprise du Fournisseur :</label>
         <input type="text" name="fournisseur_entreprise" required />
 

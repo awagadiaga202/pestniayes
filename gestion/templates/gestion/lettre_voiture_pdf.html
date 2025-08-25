@@ -17,8 +17,8 @@
                <tr>
  <td style="text-align: center;">
     
-    {% if logo_base64 %}
-    <img src="data:image/jpg;base64,{{ logo_base64 }}" alt="Logo Prest-Niayes" style="width: 120px; height: auto;" /></br>
+     {% if cachet_base64 %}
+        <img src="data:image/png;base64,{{ cachet_base64 }}" alt="Cachet" style="width:120px; display:block; margin-top:10px;">
     {% endif %}
         République du Sénégal<br/>
         Entreprise Prest-Niayes<br/>
@@ -69,11 +69,21 @@
             <td>Date et lieu de réception : ___________________________</td>
         </tr>
     </table></br>
-
-    <div class="footer">
-        <div class="signature">LE CLIENT</div></br>
-        <div class="signature">RÉSERVES</div>
+<div style="margin-top:60px; width:100%; font-weight:bold; display:flex; justify-content:space-between;">
+    <div style="text-align:left; text-decoration:underline; width:33%;">
+        DIRECTION
     </div>
+    <div style="text-align:center; text-decoration:underline; width:33%;">
+        CLIENT
+    </div>
+    <div style="text-align:right; text-decoration:underline; width:33%;">
+        RÉSERVES
+    </div>
+</div>
+
+
+
+
 
 </body>
 </html>

@@ -1243,7 +1243,13 @@ def facture_proforma_view(request):
     return render(request, "gestion/facture_proforma_form.html")
 #Bon Commande 
 def bon_commande_view(request):
+    # Générer un numéro par défaut
+    numero_bc_defaut = f"BC-{uuid.uuid4().hex[:6].upper()}"
+
     if request.method == "POST":
+        # Récupérer le numéro depuis le formulaire (modifié par l'utilisateur)
+        numero_bc = request.POST.get("numero_bc", numero_bc_defaut)
+
         fournisseur_nom = request.POST.get("fournisseur_nom")
         fournisseur_entreprise = request.POST.get("fournisseur_entreprise")
         fournisseur_adresse = request.POST.get("fournisseur_adresse")
@@ -1264,16 +1270,12 @@ def bon_commande_view(request):
             total += montant
         total = round(total, 2)
 
-        numero_bc = f"BC-{uuid.uuid4().hex[:6].upper()}"
         date_commande_str = request.POST.get("date_commande")
         try:
             date_commande = datetime.strptime(date_commande_str, "%Y-%m-%d").date()
         except (ValueError, TypeError):
             date_commande = datetime.today().date()
-
-        # ✅ toujours défini après avoir obtenu une date valide
         date_livraison = date_commande + timedelta(days=7)
-
 
         # Sauvegarde en base
         bon = BonCommande.objects.create(
@@ -1296,16 +1298,16 @@ def bon_commande_view(request):
                 montant=float(ligne["montant"])
             )
 
-        # Génération PDF
+        # Génération PDF comme avant
         logo_base64 = ""
         cachet_signature_base64 = ""
 
-        logo_path = finders.find("images/awa.jpg")
+        logo_path = finders.find("images/logo_presniayes.png")
         if logo_path and os.path.exists(logo_path):
             with open(logo_path, "rb") as img:
                 logo_base64 = base64.b64encode(img.read()).decode()
 
-        cachet_path = finders.find("images/cachet_signature.png")
+        cachet_path = finders.find("images/lo.png")
         if cachet_path and os.path.exists(cachet_path):
             with open(cachet_path, "rb") as image_file:
                 cachet_signature_base64 = base64.b64encode(image_file.read()).decode()
@@ -1334,6 +1336,10 @@ def bon_commande_view(request):
 
         return response
 
+    # GET : afficher le formulaire avec le numéro pré-rempli
+    return render(request, "gestion/bon_commande_form.html", {"numero_bc": numero_bc_defaut})
+
+
     return render(request, "gestion/bon_commande_form.html")
 def liste_bons_commande(request):
     bons = BonCommande.objects.all().order_by('-date_commande')
@@ -1349,11 +1355,15 @@ def redirection_login(request):
         return redirect('gestion/dashboard_vendeur.html')  # URL du dashboard vendeur
     else:
         return redirect('login.html')       # sécurité au cas où
-
-
-
+@login_required(login_url='login')  # redirige automatiquement vers /login si pas connecté
 def accueil(request):
-    return render(request, 'gestion/home.html')
+    # Redirection selon le rôle
+    if request.user.role == 'admin':
+        return render(request, 'gestion/home.html')  # page d'accueil pour admin
+    elif request.user.role == 'vendeur':
+        return redirect('gestion/dashboard_vendeur')  # URL du dashboard vendeur
+    else:
+        return redirect('login')  # par sécurité
 
 
 def ajouter_compte(request):
@@ -1473,7 +1483,7 @@ def bordereau_livraison_pdf(request):
 
     numero_bordereau = f"BL-{datetime.now().strftime('%Y%m%d%H%M%S')}"
 
-    logo_path = finders.find("images/awa.jpg")
+    logo_path = finders.find("images/logo_prestniayes.png")
     logo_base64 = ""
     if logo_path and os.path.exists(logo_path):
         with open(logo_path, "rb") as img:
@@ -1542,7 +1552,7 @@ def logout_view(request):
 
 def lettre_voiture_pdf(request):
     
-    logo_path = finders.find("images/awa.jpg")
+    logo_path = finders.find("'images/logo_prestniayes.png'")
     logo_base64 = ""
     if logo_path and os.path.exists(logo_path):
         with open(logo_path, "rb") as img:

@@ -1,4 +1,4 @@
-{% extends 'gestion/base.html' %}
+{% extends 'gestion/base.html' %} 
 {% block title %}Remplir Lettre de Voiture{% endblock %}
 
 {% block content %}
@@ -42,9 +42,16 @@
                 <input type="date" class="form-control" name="date_expedition">
             </div>
         </div>
-        <div class="text-end">
+        <div class="text-end mb-4">
             <button type="submit" class="btn btn-primary">📄 Générer le PDF</button>
         </div>
     </form>
+
+    <!-- Ligne avec Direction | Client | Réserves -->
+    <div class="row text-center mt-5">
+        <div class="col">Direction</div>
+        <div class="col">Client</div>
+        <div class="col">Réserves</div>
+    </div>
 </div>
 {% endblock %}

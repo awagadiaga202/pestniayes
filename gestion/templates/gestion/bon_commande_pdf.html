@@ -27,7 +27,7 @@
  <td style="text-align: center;">
 
     {% if logo_base64 %}
-    <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="logo" alt="Logo Prest-Niayes" /></br>
+    <img src="data:image/png;base64,{{ logo_base64 }}" class="logo" alt="Logo Prest-Niayes" /></br>
     {% endif %}
     Localisation : Notto Gouye Diama, Sénégal<br/>
         RC: SN THS 2018 A 3014 - NINEA: 006906400 <br/>
@@ -78,13 +78,13 @@
     </tfoot>
 </table>
 
-<div class="signature">
-    La Direction
-    {% comment %} Tu peux intégrer ici l'image de signature/cachet en base64 si besoin {% endcomment %}
-    <img src="{% static 'images/cachet_signature.png' %}" alt="Signature Cachet" />
-</div>
 
-<div class="footer">
+    <div class="signature">
+    <strong>La Directiont</strong>
+        {% if cachet_signature_base64 %}
+        <img src="data:image/png;base64,{{cachet_signature_base64}}" alt="Cachet" style="width:120px; display:block; margin-top:10px;">
+    {% endif %}
+</div>
 Merci pour votre confiance !</div>
 
 </body>
