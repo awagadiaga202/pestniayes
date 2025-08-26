@@ -56,6 +56,8 @@ urlpatterns = [
          path('lettre-voiture/', views.lettre_voiture, name='lettre_voiture'),
          path('ventes/variete/<str:variete>/export/', views.exporter_ventes_variete_pdf, name='exporter_ventes_variete'),
          path("ventes/client/<str:client_nom>/export/", views.exporter_ventes_client_pdf, name="exporter_ventes_client_pdf"),
+         #path( 'ventes/export/<str:client_nom>/<str:variete_nom>/',views.exporter_ventes_client_variete_pdf, name='exporter_ventes_client_variete_pdf' ),
+
 
 
 
@@ -71,10 +73,6 @@ urlpatterns = [
         path('comptes/modifier/<int:compte_id>/', views.modifier_compte, name='modifier_compte'),
         path('comptes/supprimer/<int:compte_id>/', views.supprimer_compte, name='supprimer_compte'),
 #connexion
-
-       
-
-
         path('login/', views.login_view, name='login'),
         path('dashboard-vendeur/', views.dashboard_vendeur, name='dashboard_vendeur'),
         # path('dashboard-comptable/', views.dashboard_comptable, name='dashboard_comptable'),
