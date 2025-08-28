@@ -1032,17 +1032,15 @@ def exporter_ventes_variete_pdf(request, variete):
     return response
 
 @login_required
+
 def liste_ventes(request):
-    client_nom = request.GET.get('client')
-    ventes = Vente.objects.all().select_related('client', 'vendeur').prefetch_related('lignes__produit')
+    user = request.user
+    if user.role == 'admin':
+        ventes = Vente.objects.all()  # l'admin voit toutes les ventes
+    else:
+        ventes = Vente.objects.filter(vendeur=user)  # chaque vendeur ne voit que ses ventes
+    return render(request, 'gestion/liste_ventes.html', {'ventes': ventes})
 
-    if client_nom:
-        ventes = ventes.filter(client__nom__icontains=client_nom)
-
-    return render(request, 'gestion/liste_ventes.html', {
-        'ventes': ventes,
-        'client_nom': client_nom,
-    })
 #####
 
 def exporter_ventes_client_pdf(request, client_nom): 
